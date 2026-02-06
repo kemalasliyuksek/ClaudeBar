@@ -14,6 +14,20 @@
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 </p>
 
+<p align="center">
+  <a href="README.md">English</a> •
+  <a href="docs/README-TR.md">Türkçe</a> •
+  <a href="docs/README-ZH.md">中文</a> •
+  <a href="docs/README-HI.md">हिन्दी</a> •
+  <a href="docs/README-ES.md">Español</a> •
+  <a href="docs/README-FR.md">Français</a> •
+  <a href="docs/README-AR.md">العربية</a> •
+  <a href="docs/README-PT.md">Português</a> •
+  <a href="docs/README-JA.md">日本語</a> •
+  <a href="docs/README-RU.md">Русский</a> •
+  <a href="docs/README-IT.md">Italiano</a>
+</p>
+
 ---
 
 ## Features
