@@ -76,6 +76,14 @@
 
 ## Instalação
 
+### Homebrew (Recomendado)
+
+```bash
+brew install --cask kemalasliyuksek/claudebar/claudebar-monitor
+```
+
+Isso lida automaticamente com a segurança do macOS Gatekeeper — nenhuma etapa adicional necessária.
+
 ### Baixar Binário Pré-compilado
 
 Baixe o `.app` mais recente na página de [Releases](https://github.com/kemalasliyuksek/claudebar/releases) e arraste para sua pasta Aplicativos.

@@ -74,6 +74,14 @@
 
 ## Installation
 
+### Homebrew (Recommended)
+
+```bash
+brew install --cask kemalasliyuksek/claudebar/claudebar-monitor
+```
+
+This automatically handles macOS Gatekeeper security — no manual steps needed.
+
 ### Download Pre-built Binary
 
 Download the latest `.app` from the [Releases](https://github.com/kemalasliyuksek/claudebar/releases) page, then drag it to your Applications folder.
@@ -112,7 +120,7 @@ Click the ⚙️ icon to configure:
 |---------|-------------|
 | Launch at login | Start automatically when you log in |
 | Show % in menu bar | Display percentage next to the menu bar icon |
-| Language | Choose app language (System, English, Turkce, 中文, Espanol, Русский) |
+| Language | Choose app language (System, English, Turkish, 中文, Espanol, Русский) |
 | Refresh interval | How often to fetch usage data (30s - 5m) |
 | Notify when 50% used | Send notification at 50% usage |
 | Notify when 75% used | Send notification at 75% usage |
