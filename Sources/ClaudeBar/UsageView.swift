@@ -7,7 +7,14 @@ struct UsageView: View {
     @State private var showSettings = false
     @State private var showAbout = false
 
-    private let barColor = Color.accentColor
+    private func barColor(for percent: Int) -> Color {
+        switch percent {
+        case 0..<50: return .green
+        case 50..<75: return .yellow
+        case 75..<100: return .orange
+        default: return .red
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -175,7 +182,7 @@ struct UsageView: View {
                 RoundedRectangle(cornerRadius: 4)
                     .fill(.primary.opacity(0.1))
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(barColor)
+                    .fill(barColor(for: percent))
                     .frame(width: max(4, geo.size.width * CGFloat(min(percent, 100)) / 100))
             }
         }
