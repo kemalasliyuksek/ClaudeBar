@@ -297,40 +297,74 @@ final class UsageService {
     // MARK: - Notifications
     
     func sendTestNotification() {
-        // Use AppleScript for reliable notifications in menu bar apps
-        let script = """
-            display notification "Notifications are working! You'll be notified when usage limits are reached." with title "ClaudeBar" sound name "default"
-            """
+        let resetTime = formatResetTime(hours: 2, minutes: 34)
         
-        var error: NSDictionary?
-        if let appleScript = NSAppleScript(source: script) {
-            appleScript.executeAndReturnError(&error)
+        // Send all notification types with delays
+        sendNotification(title: "50% Usage Warning", body: "You've used 50% of your current session limit.")
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [self] in
+            sendNotification(title: "75% Usage Warning", body: "You've used 75% of your current session limit.")
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [self] in
+            sendNotification(title: "Limit Reached", body: "You've reached your current session limit. Resets in \(resetTime).")
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) { [self] in
+            sendNotification(title: "Limit Reset", body: "Your current session limit has been reset. You can continue using Claude.")
         }
     }
     
-    private func checkThresholds(oldValue: Int?, newValue: Int, limitName: String) {
+    private func formatResetTime(hours: Int, minutes: Int) -> String {
+        if hours > 0 {
+            return "\(hours) hr \(minutes) min"
+        }
+        return "\(minutes) min"
+    }
+    
+    private func getResetTimeFromBucket(_ bucket: UsageBucket?) -> String? {
+        guard let bucket = bucket, let resetDate = bucket.resetDate else { return nil }
+        let seconds = resetDate.timeIntervalSince(Date())
+        guard seconds > 0 else { return nil }
+        
+        let hours = Int(seconds) / 3600
+        let minutes = (Int(seconds) % 3600) / 60
+        return formatResetTime(hours: hours, minutes: minutes)
+    }
+    
+    private func checkThresholds(oldValue: Int?, newValue: Int, limitName: String, resetTime: String?) {
         guard let old = oldValue else { return }
         
-        let thresholds: [(Int, Bool, String)] = [
-            (50, notifyAt50, "50% used"),
-            (75, notifyAt75, "75% used"),
-            (100, notifyAt100, "limit reached")
-        ]
+        // Check 50% threshold
+        if notifyAt50 && old < 50 && newValue >= 50 {
+            sendNotification(
+                title: "50% Usage Warning",
+                body: "You've used 50% of your \(limitName.lowercased())."
+            )
+        }
         
-        for (threshold, enabled, message) in thresholds {
-            if enabled && old < threshold && newValue >= threshold {
-                sendNotification(
-                    title: "\(limitName)",
-                    body: "You've \(message) of your \(limitName.lowercased())."
-                )
+        // Check 75% threshold
+        if notifyAt75 && old < 75 && newValue >= 75 {
+            sendNotification(
+                title: "75% Usage Warning",
+                body: "You've used 75% of your \(limitName.lowercased())."
+            )
+        }
+        
+        // Check 100% threshold with reset time
+        if notifyAt100 && old < 100 && newValue >= 100 {
+            var body = "You've reached your \(limitName.lowercased())."
+            if let time = resetTime {
+                body += " Resets in \(time)."
             }
+            sendNotification(title: "Limit Reached", body: body)
         }
         
         // Check for reset
         if notifyOnReset && old > 0 && newValue == 0 {
             sendNotification(
-                title: "\(limitName) Reset",
-                body: "Your \(limitName.lowercased()) has been reset."
+                title: "Limit Reset",
+                body: "Your \(limitName.lowercased()) has been reset. You can continue using Claude."
             )
         }
     }
@@ -348,22 +382,25 @@ final class UsageService {
     
     private func checkAllThresholds(_ newUsage: UsageResponse) {
         if let bucket = newUsage.fiveHour {
-            checkThresholds(oldValue: previousFiveHour, newValue: bucket.percent, limitName: "Current Session")
+            let resetTime = getResetTimeFromBucket(bucket)
+            checkThresholds(oldValue: previousFiveHour, newValue: bucket.percent, limitName: "Current Session", resetTime: resetTime)
             previousFiveHour = bucket.percent
         }
         
         if let bucket = newUsage.sevenDay {
-            checkThresholds(oldValue: previousSevenDay, newValue: bucket.percent, limitName: "Weekly Limit")
+            let resetTime = getResetTimeFromBucket(bucket)
+            checkThresholds(oldValue: previousSevenDay, newValue: bucket.percent, limitName: "Weekly Limit", resetTime: resetTime)
             previousSevenDay = bucket.percent
         }
         
         if let bucket = newUsage.sevenDaySonnet {
-            checkThresholds(oldValue: previousSevenDaySonnet, newValue: bucket.percent, limitName: "Sonnet Weekly")
+            let resetTime = getResetTimeFromBucket(bucket)
+            checkThresholds(oldValue: previousSevenDaySonnet, newValue: bucket.percent, limitName: "Sonnet Weekly", resetTime: resetTime)
             previousSevenDaySonnet = bucket.percent
         }
         
         if let extra = newUsage.extraUsage, extra.isEnabled {
-            checkThresholds(oldValue: previousExtraUsage, newValue: extra.percent, limitName: "Extra Usage")
+            checkThresholds(oldValue: previousExtraUsage, newValue: extra.percent, limitName: "Extra Usage", resetTime: nil)
             previousExtraUsage = extra.percent
         }
     }

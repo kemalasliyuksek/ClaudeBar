@@ -29,31 +29,26 @@
 - **Lightweight** - Minimal resource footprint, no Electron
 - **Privacy Focused** - No analytics, no telemetry
 
-## Screenshot
+## Screenshots
 
-```
-┌─────────────────────────────────────────┐
-│ Claude plan usage limits     [Max Plan] │
-│                                         │
-│ Current session  ██░░░░░░░░   11% used  │
-│ Resets in 3 hr 56 min                   │
-│─────────────────────────────────────────│
-│ Weekly limits                           │
-│                                         │
-│ All models       ████░░░░░░   41% used  │
-│ Resets Sat 10:00 AM                     │
-│                                         │
-│ Sonnet only      ░░░░░░░░░░    0% used  │
-│ You haven't used Sonnet yet             │
-│─────────────────────────────────────────│
-│ Extra usage                             │
-│                                         │
-│ $0.00 spent      ░░░░░░░░░░    0% used  │
-│ Resets Mar 1 · Limit: $50               │
-│─────────────────────────────────────────│
-│ Last updated: ...          ⓘ  ⚙️  ↻     │
-└─────────────────────────────────────────┘
-```
+<p align="center">
+  <img src="screenshots/claudebar-screenshot-general.png" alt="ClaudeBar General View" width="380">
+</p>
+
+<p align="center">
+  <em>Real-time usage monitoring with plan badge</em>
+</p>
+
+<details>
+<summary><strong>More Screenshots</strong></summary>
+
+<br>
+
+| Settings | Notifications | About |
+|:--------:|:-------------:|:-----:|
+| <img src="screenshots/claudebar-screenshot-settings.png" alt="Settings" width="250"> | <img src="screenshots/claudebar-screenshot-notifications.png" alt="Notifications" width="250"> | <img src="screenshots/claudebar-screenshot-about.png" alt="About" width="250"> |
+
+</details>
 
 ## Requirements
 
@@ -230,7 +225,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Author
 
-**Kemal Asliyuksek** - [@kemalasliyuksek](https://github.com/kemalasliyuksek)
+**Kemal Aslıyüksek** - [@kemalasliyuksek](https://github.com/kemalasliyuksek)
 
 ## Disclaimer
 
