@@ -50,7 +50,7 @@
 ## 截图
 
 <p align="center">
-  <img src="../screenshots/claudebar-screenshot-general.png" alt="ClaudeBar 概览" width="380">
+  <img src="../screenshots/app-screenshot.png" alt="ClaudeBar 概览" width="380">
 </p>
 
 <p align="center">
@@ -64,7 +64,7 @@
 
 | 设置 | 通知 | 关于 |
 |:----:|:----:|:----:|
-| <img src="../screenshots/claudebar-screenshot-settings.png" alt="设置" width="250"> | <img src="../screenshots/claudebar-screenshot-notifications.png" alt="通知" width="250"> | <img src="../screenshots/claudebar-screenshot-about.png" alt="关于" width="250"> |
+| <img src="../screenshots/settings-screenshot.png" alt="设置" width="250"> | <img src="../screenshots/notifications-screenshot.png" alt="通知" width="250"> | <img src="../screenshots/about-screenshot.png" alt="关于" width="250"> |
 
 </details>
 

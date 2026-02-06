@@ -50,7 +50,7 @@
 ## スクリーンショット
 
 <p align="center">
-  <img src="../screenshots/claudebar-screenshot-general.png" alt="ClaudeBar 概要ビュー" width="380">
+  <img src="../screenshots/app-screenshot.png" alt="ClaudeBar 概要ビュー" width="380">
 </p>
 
 <p align="center">
@@ -64,7 +64,7 @@
 
 | 設定 | 通知 | 情報 |
 |:----:|:----:|:----:|
-| <img src="../screenshots/claudebar-screenshot-settings.png" alt="設定" width="250"> | <img src="../screenshots/claudebar-screenshot-notifications.png" alt="通知" width="250"> | <img src="../screenshots/claudebar-screenshot-about.png" alt="情報" width="250"> |
+| <img src="../screenshots/settings-screenshot.png" alt="設定" width="250"> | <img src="../screenshots/notifications-screenshot.png" alt="通知" width="250"> | <img src="../screenshots/about-screenshot.png" alt="情報" width="250"> |
 
 </details>
 

@@ -50,7 +50,7 @@
 ## स्क्रीनशॉट
 
 <p align="center">
-  <img src="../screenshots/claudebar-screenshot-general.png" alt="ClaudeBar सामान्य दृश्य" width="380">
+  <img src="../screenshots/app-screenshot.png" alt="ClaudeBar सामान्य दृश्य" width="380">
 </p>
 
 <p align="center">
@@ -64,7 +64,7 @@
 
 | सेटिंग्स | सूचनाएँ | के बारे में |
 |:---------:|:--------:|:----------:|
-| <img src="../screenshots/claudebar-screenshot-settings.png" alt="सेटिंग्स" width="250"> | <img src="../screenshots/claudebar-screenshot-notifications.png" alt="सूचनाएँ" width="250"> | <img src="../screenshots/claudebar-screenshot-about.png" alt="के बारे में" width="250"> |
+| <img src="../screenshots/settings-screenshot.png" alt="सेटिंग्स" width="250"> | <img src="../screenshots/notifications-screenshot.png" alt="सूचनाएँ" width="250"> | <img src="../screenshots/about-screenshot.png" alt="के बारे में" width="250"> |
 
 </details>
 

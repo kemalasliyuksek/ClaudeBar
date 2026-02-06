@@ -50,7 +50,7 @@
 ## Скриншоты
 
 <p align="center">
-  <img src="../screenshots/claudebar-screenshot-general.png" alt="Общий вид ClaudeBar" width="380">
+  <img src="../screenshots/app-screenshot.png" alt="Общий вид ClaudeBar" width="380">
 </p>
 
 <p align="center">
@@ -64,7 +64,7 @@
 
 | Настройки | Уведомления | О программе |
 |:---------:|:-----------:|:-----------:|
-| <img src="../screenshots/claudebar-screenshot-settings.png" alt="Настройки" width="250"> | <img src="../screenshots/claudebar-screenshot-notifications.png" alt="Уведомления" width="250"> | <img src="../screenshots/claudebar-screenshot-about.png" alt="О программе" width="250"> |
+| <img src="../screenshots/settings-screenshot.png" alt="Настройки" width="250"> | <img src="../screenshots/notifications-screenshot.png" alt="Уведомления" width="250"> | <img src="../screenshots/about-screenshot.png" alt="О программе" width="250"> |
 
 </details>
 

@@ -68,17 +68,17 @@
 "error.request_failed" = "Запрос не выполнен";
 
 /* Notifications */
-"notification.50_title" = "Предупреждение: 50%% использовано";
+"notification.50_title" = "Предупреждение: 50% использовано";
 "notification.50_body" = "Вы использовали 50%% вашего лимита: %@.";
-"notification.75_title" = "Предупреждение: 75%% использовано";
+"notification.75_title" = "Предупреждение: 75% использовано";
 "notification.75_body" = "Вы использовали 75%% вашего лимита: %@.";
 "notification.limit_title" = "Лимит достигнут";
 "notification.limit_body" = "Вы достигли лимита: %@.";
 "notification.limit_body_resets" = "Вы достигли лимита: %@. Сброс через %@.";
 "notification.reset_title" = "Лимит сброшен";
 "notification.reset_body" = "Ваш лимит (%@) сброшен. Вы можете продолжить использование Claude.";
-"notification.test_50_body" = "Вы использовали 50%% лимита текущей сессии.";
-"notification.test_75_body" = "Вы использовали 75%% лимита текущей сессии.";
+"notification.test_50_body" = "Вы использовали 50% лимита текущей сессии.";
+"notification.test_75_body" = "Вы использовали 75% лимита текущей сессии.";
 "notification.test_limit_body" = "Вы достигли лимита текущей сессии. Сброс через %@.";
 "notification.test_reset_body" = "Лимит текущей сессии сброшен. Вы можете продолжить использование Claude.";
 

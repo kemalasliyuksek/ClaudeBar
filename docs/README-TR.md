@@ -48,7 +48,7 @@
 ## Ekran Görüntüleri
 
 <p align="center">
-  <img src="../screenshots/claudebar-screenshot-general.png" alt="ClaudeBar Genel Görünüm" width="380">
+  <img src="../screenshots/app-screenshot.png" alt="ClaudeBar Genel Görünüm" width="380">
 </p>
 
 <p align="center">
@@ -62,7 +62,7 @@
 
 | Ayarlar | Bildirimler | Hakkında |
 |:-------:|:-----------:|:--------:|
-| <img src="../screenshots/claudebar-screenshot-settings.png" alt="Ayarlar" width="250"> | <img src="../screenshots/claudebar-screenshot-notifications.png" alt="Bildirimler" width="250"> | <img src="../screenshots/claudebar-screenshot-about.png" alt="Hakkında" width="250"> |
+| <img src="../screenshots/settings-screenshot.png" alt="Ayarlar" width="250"> | <img src="../screenshots/notifications-screenshot.png" alt="Bildirimler" width="250"> | <img src="../screenshots/about-screenshot.png" alt="Hakkında" width="250"> |
 
 </details>
 

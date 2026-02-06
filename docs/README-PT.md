@@ -50,7 +50,7 @@
 ## Capturas de Tela
 
 <p align="center">
-  <img src="../screenshots/claudebar-screenshot-general.png" alt="Visão Geral do ClaudeBar" width="380">
+  <img src="../screenshots/app-screenshot.png" alt="Visão Geral do ClaudeBar" width="380">
 </p>
 
 <p align="center">
@@ -64,7 +64,7 @@
 
 | Configurações | Notificações | Sobre |
 |:-------------:|:------------:|:-----:|
-| <img src="../screenshots/claudebar-screenshot-settings.png" alt="Configurações" width="250"> | <img src="../screenshots/claudebar-screenshot-notifications.png" alt="Notificações" width="250"> | <img src="../screenshots/claudebar-screenshot-about.png" alt="Sobre" width="250"> |
+| <img src="../screenshots/settings-screenshot.png" alt="Configurações" width="250"> | <img src="../screenshots/notifications-screenshot.png" alt="Notificações" width="250"> | <img src="../screenshots/about-screenshot.png" alt="Sobre" width="250"> |
 
 </details>
 

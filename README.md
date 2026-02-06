@@ -48,7 +48,7 @@
 ## Screenshots
 
 <p align="center">
-  <img src="screenshots/claudebar-screenshot-general.png" alt="ClaudeBar General View" width="380">
+  <img src="screenshots/app-screenshot.png" alt="ClaudeBar General View" width="380">
 </p>
 
 <p align="center">
@@ -62,7 +62,7 @@
 
 | Settings | Notifications | About |
 |:--------:|:-------------:|:-----:|
-| <img src="screenshots/claudebar-screenshot-settings.png" alt="Settings" width="250"> | <img src="screenshots/claudebar-screenshot-notifications.png" alt="Notifications" width="250"> | <img src="screenshots/claudebar-screenshot-about.png" alt="About" width="250"> |
+| <img src="screenshots/settings-screenshot.png" alt="Settings" width="250"> | <img src="screenshots/notifications-screenshot.png" alt="Notifications" width="250"> | <img src="screenshots/about-screenshot.png" alt="About" width="250"> |
 
 </details>
 

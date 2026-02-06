@@ -50,7 +50,7 @@
 ## لقطات الشاشة
 
 <p align="center">
-  <img src="../screenshots/claudebar-screenshot-general.png" alt="عرض ClaudeBar العام" width="380">
+  <img src="../screenshots/app-screenshot.png" alt="عرض ClaudeBar العام" width="380">
 </p>
 
 <p align="center">
@@ -64,7 +64,7 @@
 
 | الإعدادات | الإشعارات | حول |
 |:---------:|:---------:|:---:|
-| <img src="../screenshots/claudebar-screenshot-settings.png" alt="الإعدادات" width="250"> | <img src="../screenshots/claudebar-screenshot-notifications.png" alt="الإشعارات" width="250"> | <img src="../screenshots/claudebar-screenshot-about.png" alt="حول" width="250"> |
+| <img src="../screenshots/settings-screenshot.png" alt="الإعدادات" width="250"> | <img src="../screenshots/notifications-screenshot.png" alt="الإشعارات" width="250"> | <img src="../screenshots/about-screenshot.png" alt="حول" width="250"> |
 
 </details>
 

@@ -68,17 +68,17 @@
 "error.request_failed" = "İstek başarısız";
 
 /* Notifications */
-"notification.50_title" = "%%50 Kullanım Uyarısı";
+"notification.50_title" = "%50 Kullanım Uyarısı";
 "notification.50_body" = "%@ limitinizin %%50'sini kullandınız.";
-"notification.75_title" = "%%75 Kullanım Uyarısı";
+"notification.75_title" = "%75 Kullanım Uyarısı";
 "notification.75_body" = "%@ limitinizin %%75'ini kullandınız.";
 "notification.limit_title" = "Limite Ulaşıldı";
 "notification.limit_body" = "%@ limitinize ulaştınız.";
 "notification.limit_body_resets" = "%@ limitinize ulaştınız. %@ sonra sıfırlanır.";
 "notification.reset_title" = "Limit Sıfırlandı";
 "notification.reset_body" = "%@ limitiniz sıfırlandı. Claude kullanmaya devam edebilirsiniz.";
-"notification.test_50_body" = "Mevcut oturum limitinizin %%50'sini kullandınız.";
-"notification.test_75_body" = "Mevcut oturum limitinizin %%75'ini kullandınız.";
+"notification.test_50_body" = "Mevcut oturum limitinizin %50'sini kullandınız.";
+"notification.test_75_body" = "Mevcut oturum limitinizin %75'ini kullandınız.";
 "notification.test_limit_body" = "Mevcut oturum limitinize ulaştınız. %@ sonra sıfırlanır.";
 "notification.test_reset_body" = "Mevcut oturum limitiniz sıfırlandı. Claude kullanmaya devam edebilirsiniz.";
 

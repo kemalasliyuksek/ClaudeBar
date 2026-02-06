@@ -68,17 +68,17 @@
 "error.request_failed" = "Request failed";
 
 /* Notifications */
-"notification.50_title" = "50%% Usage Warning";
+"notification.50_title" = "50% Usage Warning";
 "notification.50_body" = "You've used 50%% of your %@.";
-"notification.75_title" = "75%% Usage Warning";
+"notification.75_title" = "75% Usage Warning";
 "notification.75_body" = "You've used 75%% of your %@.";
 "notification.limit_title" = "Limit Reached";
 "notification.limit_body" = "You've reached your %@.";
 "notification.limit_body_resets" = "You've reached your %@. Resets in %@.";
 "notification.reset_title" = "Limit Reset";
 "notification.reset_body" = "Your %@ has been reset. You can continue using Claude.";
-"notification.test_50_body" = "You've used 50%% of your current session limit.";
-"notification.test_75_body" = "You've used 75%% of your current session limit.";
+"notification.test_50_body" = "You've used 50% of your current session limit.";
+"notification.test_75_body" = "You've used 75% of your current session limit.";
 "notification.test_limit_body" = "You've reached your current session limit. Resets in %@.";
 "notification.test_reset_body" = "Your current session limit has been reset. You can continue using Claude.";
 

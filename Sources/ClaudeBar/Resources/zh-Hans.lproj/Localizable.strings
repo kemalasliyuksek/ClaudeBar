@@ -68,17 +68,17 @@
 "error.request_failed" = "请求失败";
 
 /* Notifications */
-"notification.50_title" = "50%% 用量警告";
+"notification.50_title" = "50% 用量警告";
 "notification.50_body" = "您已使用 %@ 的 50%%。";
-"notification.75_title" = "75%% 用量警告";
+"notification.75_title" = "75% 用量警告";
 "notification.75_body" = "您已使用 %@ 的 75%%。";
 "notification.limit_title" = "已达限额";
 "notification.limit_body" = "您已达到 %@ 限额。";
 "notification.limit_body_resets" = "您已达到 %@ 限额。将在 %@ 后重置。";
 "notification.reset_title" = "限额已重置";
 "notification.reset_body" = "您的 %@ 已重置。您可以继续使用 Claude。";
-"notification.test_50_body" = "您已使用当前会话限额的 50%%。";
-"notification.test_75_body" = "您已使用当前会话限额的 75%%。";
+"notification.test_50_body" = "您已使用当前会话限额的 50%。";
+"notification.test_75_body" = "您已使用当前会话限额的 75%。";
 "notification.test_limit_body" = "您已达到当前会话限额。将在 %@ 后重置。";
 "notification.test_reset_body" = "您的当前会话限额已重置。您可以继续使用 Claude。";
 
