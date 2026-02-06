@@ -208,40 +208,46 @@ struct UsageView: View {
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
                 
-                Link(destination: URL(string: "https://github.com/kemalasliyuksek")!) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 10))
-                        Text("Kemal Aslıyüksek")
-                            .font(.system(size: 12, weight: .medium))
+                if let url = URL(string: "https://github.com/kemalasliyuksek") {
+                    Link(destination: url) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 10))
+                            Text("Kemal Aslıyüksek")
+                                .font(.system(size: 12, weight: .medium))
+                        }
                     }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.primary)
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(.primary)
             }
             
             HStack(spacing: 12) {
-                Link(destination: URL(string: "https://github.com/kemalasliyuksek/claudebar")!) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "link")
-                            .font(.system(size: 10))
-                        Text("GitHub")
-                            .font(.system(size: 11))
+                if let url = URL(string: "https://github.com/kemalasliyuksek/claudebar") {
+                    Link(destination: url) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "link")
+                                .font(.system(size: 10))
+                            Text("GitHub")
+                                .font(.system(size: 11))
+                        }
                     }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(.secondary)
                 
-                Link(destination: URL(string: "https://github.com/kemalasliyuksek/claudebar/issues")!) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "exclamationmark.bubble")
-                            .font(.system(size: 10))
-                        Text("Report Issue")
-                            .font(.system(size: 11))
+                if let url = URL(string: "https://github.com/kemalasliyuksek/claudebar/issues") {
+                    Link(destination: url) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.bubble")
+                                .font(.system(size: 10))
+                            Text("Report Issue")
+                                .font(.system(size: 11))
+                        }
                     }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(.secondary)
                 
                 Spacer()
                 
@@ -393,6 +399,16 @@ struct UsageView: View {
                 Task { await service.refresh() }
             } label: {
                 Image(systemName: "arrow.clockwise")
+                    .font(.system(size: 11))
+            }
+            .buttonStyle(.borderless)
+            .foregroundStyle(.secondary)
+            .focusable(false)
+            
+            Button {
+                NSApplication.shared.terminate(nil)
+            } label: {
+                Image(systemName: "power")
                     .font(.system(size: 11))
             }
             .buttonStyle(.borderless)

@@ -370,8 +370,11 @@ final class UsageService {
     }
     
     private func sendNotification(title: String, body: String) {
+        let escapedTitle = title.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
+        let escapedBody = body.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
+        
         let script = """
-            display notification "\(body)" with title "\(title)" sound name "default"
+            display notification "\(escapedBody)" with title "\(escapedTitle)" sound name "default"
             """
         
         var error: NSDictionary?

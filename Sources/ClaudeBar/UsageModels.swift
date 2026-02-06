@@ -56,7 +56,8 @@ struct ExtraUsage: Codable {
         let now = Date()
         
         var components = calendar.dateComponents([.year, .month], from: now)
-        components.month! += 1
+        guard let month = components.month else { return "next month" }
+        components.month = month + 1
         components.day = 1
         
         guard let nextMonth = calendar.date(from: components) else { return "next month" }

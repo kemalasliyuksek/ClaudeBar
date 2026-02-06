@@ -201,6 +201,7 @@ claudebar/
 ├── README.md               # This file
 ├── assets/
 │   └── icons/              # App icons
+├── docs/                   # Translated READMEs
 ├── Resources/
 │   ├── AppIcon.icns        # macOS app icon
 │   └── Info.plist          # App metadata
