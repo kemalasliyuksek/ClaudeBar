@@ -26,25 +26,19 @@ final class UsageService {
     // MARK: - Settings (persisted)
     
     var showPercentage: Bool {
-        get { UserDefaults.standard.object(forKey: "showPercentage") as? Bool ?? true }
-        set { UserDefaults.standard.set(newValue, forKey: "showPercentage") }
+        didSet { UserDefaults.standard.set(showPercentage, forKey: "showPercentage") }
     }
     
     var refreshInterval: Int {
-        get { UserDefaults.standard.object(forKey: "refreshInterval") as? Int ?? 60 }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "refreshInterval")
+        didSet {
+            UserDefaults.standard.set(refreshInterval, forKey: "refreshInterval")
             restartPolling()
         }
     }
     
     var appLanguage: AppLanguage {
-        get {
-            let raw = UserDefaults.standard.string(forKey: "appLanguage") ?? "system"
-            return AppLanguage(rawValue: raw) ?? .system
-        }
-        set {
-            UserDefaults.standard.set(newValue.rawValue, forKey: "appLanguage")
+        didSet {
+            UserDefaults.standard.set(appLanguage.rawValue, forKey: "appLanguage")
             languageRefreshID += 1
         }
     }
@@ -52,23 +46,19 @@ final class UsageService {
     // MARK: - Notification Settings (persisted)
     
     var notifyAt50: Bool {
-        get { UserDefaults.standard.object(forKey: "notifyAt50") as? Bool ?? true }
-        set { UserDefaults.standard.set(newValue, forKey: "notifyAt50") }
+        didSet { UserDefaults.standard.set(notifyAt50, forKey: "notifyAt50") }
     }
     
     var notifyAt75: Bool {
-        get { UserDefaults.standard.object(forKey: "notifyAt75") as? Bool ?? true }
-        set { UserDefaults.standard.set(newValue, forKey: "notifyAt75") }
+        didSet { UserDefaults.standard.set(notifyAt75, forKey: "notifyAt75") }
     }
     
     var notifyAt100: Bool {
-        get { UserDefaults.standard.object(forKey: "notifyAt100") as? Bool ?? true }
-        set { UserDefaults.standard.set(newValue, forKey: "notifyAt100") }
+        didSet { UserDefaults.standard.set(notifyAt100, forKey: "notifyAt100") }
     }
     
     var notifyOnReset: Bool {
-        get { UserDefaults.standard.object(forKey: "notifyOnReset") as? Bool ?? false }
-        set { UserDefaults.standard.set(newValue, forKey: "notifyOnReset") }
+        didSet { UserDefaults.standard.set(notifyOnReset, forKey: "notifyOnReset") }
     }
     
     // MARK: - Configuration
@@ -83,6 +73,16 @@ final class UsageService {
     // MARK: - Lifecycle
     
     init() {
+        let defaults = UserDefaults.standard
+        showPercentage = defaults.object(forKey: "showPercentage") as? Bool ?? true
+        refreshInterval = defaults.object(forKey: "refreshInterval") as? Int ?? 60
+        notifyAt50 = defaults.object(forKey: "notifyAt50") as? Bool ?? true
+        notifyAt75 = defaults.object(forKey: "notifyAt75") as? Bool ?? true
+        notifyAt100 = defaults.object(forKey: "notifyAt100") as? Bool ?? true
+        notifyOnReset = defaults.object(forKey: "notifyOnReset") as? Bool ?? false
+        let langRaw = defaults.string(forKey: "appLanguage") ?? "system"
+        appLanguage = AppLanguage(rawValue: langRaw) ?? .system
+        
         Task { await refresh() }
         startPolling()
     }
