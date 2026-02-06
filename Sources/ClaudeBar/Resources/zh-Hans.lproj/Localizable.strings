@@ -53,7 +53,9 @@
 /* Footer */
 "footer.last_updated" = "上次更新：%@";
 "footer.less_than_minute" = "不到一分钟前";
+"footer.minute_ago" = "%d 分钟前";
 "footer.minutes_ago" = "%d 分钟前";
+"footer.hour_ago" = "%d 小时前";
 "footer.hours_ago" = "%d 小时前";
 
 /* Loading & Errors */
@@ -81,6 +83,12 @@
 "notification.test_75_body" = "您已使用当前会话限额的 75%。";
 "notification.test_limit_body" = "您已达到当前会话限额。将在 %@ 后重置。";
 "notification.test_reset_body" = "您的当前会话限额已重置。您可以继续使用 Claude。";
+
+/* Refresh Intervals */
+"interval.30s" = "30秒";
+"interval.1m" = "1分钟";
+"interval.2m" = "2分钟";
+"interval.5m" = "5分钟";
 
 /* Limit Names */
 "limit.current_session" = "当前会话";

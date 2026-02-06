@@ -53,8 +53,10 @@
 /* Footer */
 "footer.last_updated" = "Última actualización: %@";
 "footer.less_than_minute" = "hace menos de un minuto";
-"footer.minutes_ago" = "hace %d minuto(s)";
-"footer.hours_ago" = "hace %d hora(s)";
+"footer.minute_ago" = "hace %d minuto";
+"footer.minutes_ago" = "hace %d minutos";
+"footer.hour_ago" = "hace %d hora";
+"footer.hours_ago" = "hace %d horas";
 
 /* Loading & Errors */
 "loading" = "Cargando...";
@@ -81,6 +83,12 @@
 "notification.test_75_body" = "Has usado el 75% del límite de tu sesión actual.";
 "notification.test_limit_body" = "Has alcanzado el límite de tu sesión actual. Se restablece en %@.";
 "notification.test_reset_body" = "El límite de tu sesión actual se ha restablecido. Puedes seguir usando Claude.";
+
+/* Refresh Intervals */
+"interval.30s" = "30s";
+"interval.1m" = "1min";
+"interval.2m" = "2min";
+"interval.5m" = "5min";
 
 /* Limit Names */
 "limit.current_session" = "sesión actual";

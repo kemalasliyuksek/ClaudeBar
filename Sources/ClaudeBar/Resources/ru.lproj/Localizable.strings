@@ -53,7 +53,9 @@
 /* Footer */
 "footer.last_updated" = "Обновлено: %@";
 "footer.less_than_minute" = "менее минуты назад";
+"footer.minute_ago" = "%d мин. назад";
 "footer.minutes_ago" = "%d мин. назад";
+"footer.hour_ago" = "%d ч. назад";
 "footer.hours_ago" = "%d ч. назад";
 
 /* Loading & Errors */
@@ -81,6 +83,12 @@
 "notification.test_75_body" = "Вы использовали 75% лимита текущей сессии.";
 "notification.test_limit_body" = "Вы достигли лимита текущей сессии. Сброс через %@.";
 "notification.test_reset_body" = "Лимит текущей сессии сброшен. Вы можете продолжить использование Claude.";
+
+/* Refresh Intervals */
+"interval.30s" = "30с";
+"interval.1m" = "1мин";
+"interval.2m" = "2мин";
+"interval.5m" = "5мин";
 
 /* Limit Names */
 "limit.current_session" = "Текущая сессия";

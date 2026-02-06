@@ -4,6 +4,7 @@ import Foundation
 ///
 /// Handles OAuth token refresh automatically when tokens expire.
 /// Updates are fetched on init and every 60 seconds thereafter.
+@MainActor
 @Observable
 final class UsageService {
     
@@ -39,6 +40,7 @@ final class UsageService {
     var appLanguage: AppLanguage {
         didSet {
             UserDefaults.standard.set(appLanguage.rawValue, forKey: "appLanguage")
+            invalidateBundleCache()
             languageRefreshID += 1
         }
     }
@@ -88,7 +90,9 @@ final class UsageService {
     }
     
     deinit {
-        timer?.invalidate()
+        MainActor.assumeIsolated {
+            timer?.invalidate()
+        }
     }
     
     // MARK: - Public Methods
@@ -313,16 +317,16 @@ final class UsageService {
         
         sendNotification(title: L("notification.50_title"), body: L("notification.test_50_body"))
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [self] in
-            sendNotification(title: L("notification.75_title"), body: L("notification.test_75_body"))
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            self?.sendNotification(title: L("notification.75_title"), body: L("notification.test_75_body"))
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [self] in
-            sendNotification(title: L("notification.limit_title"), body: L("notification.test_limit_body", resetTime))
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+            self?.sendNotification(title: L("notification.limit_title"), body: L("notification.test_limit_body", resetTime))
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) { [self] in
-            sendNotification(title: L("notification.reset_title"), body: L("notification.test_reset_body"))
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) { [weak self] in
+            self?.sendNotification(title: L("notification.reset_title"), body: L("notification.test_reset_body"))
         }
     }
     

@@ -17,7 +17,14 @@ cp "$BUILD_DIR/$APP_NAME" "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 cp "Resources/Info.plist" "$APP_BUNDLE/Contents/Info.plist"
 cp "Resources/AppIcon.icns" "$APP_BUNDLE/Contents/Resources/AppIcon.icns"
 
-RESOURCE_BUNDLE=".build/arm64-apple-macosx/release/ClaudeBar_ClaudeBar.bundle"
+ARCH=$(uname -m)
+if [ "$ARCH" = "arm64" ]; then
+    TRIPLE="arm64-apple-macosx"
+else
+    TRIPLE="x86_64-apple-macosx"
+fi
+
+RESOURCE_BUNDLE=".build/$TRIPLE/release/ClaudeBar_ClaudeBar.bundle"
 if [ -d "$RESOURCE_BUNDLE" ]; then
     cp -r "$RESOURCE_BUNDLE" "$APP_BUNDLE/Contents/Resources/"
 fi

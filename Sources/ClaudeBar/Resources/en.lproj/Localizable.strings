@@ -53,8 +53,10 @@
 /* Footer */
 "footer.last_updated" = "Last updated: %@";
 "footer.less_than_minute" = "less than a minute ago";
-"footer.minutes_ago" = "%d minute(s) ago";
-"footer.hours_ago" = "%d hour(s) ago";
+"footer.minute_ago" = "%d minute ago";
+"footer.minutes_ago" = "%d minutes ago";
+"footer.hour_ago" = "%d hour ago";
+"footer.hours_ago" = "%d hours ago";
 
 /* Loading & Errors */
 "loading" = "Loading...";
@@ -81,6 +83,12 @@
 "notification.test_75_body" = "You've used 75% of your current session limit.";
 "notification.test_limit_body" = "You've reached your current session limit. Resets in %@.";
 "notification.test_reset_body" = "Your current session limit has been reset. You can continue using Claude.";
+
+/* Refresh Intervals */
+"interval.30s" = "30s";
+"interval.1m" = "1m";
+"interval.2m" = "2m";
+"interval.5m" = "5m";
 
 /* Limit Names */
 "limit.current_session" = "current session";

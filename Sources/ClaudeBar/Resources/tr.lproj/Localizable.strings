@@ -53,7 +53,9 @@
 /* Footer */
 "footer.last_updated" = "Son güncelleme: %@";
 "footer.less_than_minute" = "bir dakikadan az";
+"footer.minute_ago" = "%d dakika önce";
 "footer.minutes_ago" = "%d dakika önce";
+"footer.hour_ago" = "%d saat önce";
 "footer.hours_ago" = "%d saat önce";
 
 /* Loading & Errors */
@@ -81,6 +83,12 @@
 "notification.test_75_body" = "Mevcut oturum limitinizin %75'ini kullandınız.";
 "notification.test_limit_body" = "Mevcut oturum limitinize ulaştınız. %@ sonra sıfırlanır.";
 "notification.test_reset_body" = "Mevcut oturum limitiniz sıfırlandı. Claude kullanmaya devam edebilirsiniz.";
+
+/* Refresh Intervals */
+"interval.30s" = "30sn";
+"interval.1m" = "1dk";
+"interval.2m" = "2dk";
+"interval.5m" = "5dk";
 
 /* Limit Names */
 "limit.current_session" = "Mevcut oturum";

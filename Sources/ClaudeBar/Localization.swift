@@ -21,13 +21,34 @@ enum AppLanguage: String, CaseIterable {
     }
 }
 
+/// Cached bundle state to avoid repeated UserDefaults reads and bundle lookups
+private var cachedLanguageCode: String?
+private var cachedBundle: Bundle?
+
+/// Invalidates the cached bundle so the next L() call resolves it fresh
+func invalidateBundleCache() {
+    cachedLanguageCode = nil
+    cachedBundle = nil
+}
+
 /// Returns the override bundle for the selected language, or nil for system default
-private func overrideBundle() -> Bundle? {
+private func resolvedBundle() -> Bundle {
     let code = UserDefaults.standard.string(forKey: "appLanguage") ?? "system"
-    guard code != "system" else { return nil }
+    
+    if code == cachedLanguageCode, let cached = cachedBundle {
+        return cached
+    }
+    
+    cachedLanguageCode = code
+    
+    guard code != "system" else {
+        cachedBundle = Bundle.module
+        return Bundle.module
+    }
 
     if let path = Bundle.module.path(forResource: code, ofType: "lproj"),
        let bundle = Bundle(path: path) {
+        cachedBundle = bundle
         return bundle
     }
 
@@ -37,11 +58,13 @@ private func overrideBundle() -> Bundle? {
         let lprojPath = (bundlePath as NSString).appendingPathComponent("\(candidate).lproj")
         if FileManager.default.fileExists(atPath: lprojPath),
            let bundle = Bundle(path: lprojPath) {
+            cachedBundle = bundle
             return bundle
         }
     }
 
-    return nil
+    cachedBundle = Bundle.module
+    return Bundle.module
 }
 
 /// Returns the active locale based on user's language selection
@@ -53,13 +76,13 @@ func activeLocale() -> Locale {
 
 /// Localized string lookup with language override support
 func L(_ key: String) -> String {
-    let bundle = overrideBundle() ?? Bundle.module
+    let bundle = resolvedBundle()
     return NSLocalizedString(key, bundle: bundle, comment: "")
 }
 
 /// Localized string with format arguments
 func L(_ key: String, _ args: CVarArg...) -> String {
-    let bundle = overrideBundle() ?? Bundle.module
+    let bundle = resolvedBundle()
     let format = NSLocalizedString(key, bundle: bundle, comment: "")
     return String(format: format, arguments: args)
 }

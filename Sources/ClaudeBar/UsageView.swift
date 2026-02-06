@@ -307,10 +307,10 @@ struct UsageView: View {
                     get: { service.refreshInterval },
                     set: { service.refreshInterval = $0 }
                 )) {
-                    Text("30s").tag(30)
-                    Text("1m").tag(60)
-                    Text("2m").tag(120)
-                    Text("5m").tag(300)
+                    Text(L("interval.30s")).tag(30)
+                    Text(L("interval.1m")).tag(60)
+                    Text(L("interval.2m")).tag(120)
+                    Text(L("interval.5m")).tag(300)
                 }
                 .pickerStyle(.menu)
                 .frame(width: 70)
@@ -438,10 +438,12 @@ struct UsageView: View {
             return L("footer.less_than_minute")
         } else if seconds < 3600 {
             let mins = seconds / 60
-            return L("footer.minutes_ago", mins)
+            let key = mins == 1 ? "footer.minute_ago" : "footer.minutes_ago"
+            return L(key, mins)
         } else {
             let hrs = seconds / 3600
-            return L("footer.hours_ago", hrs)
+            let key = hrs == 1 ? "footer.hour_ago" : "footer.hours_ago"
+            return L(key, hrs)
         }
     }
 
