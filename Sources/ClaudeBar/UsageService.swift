@@ -299,7 +299,7 @@ final class UsageService {
     func sendTestNotification() {
         // Use AppleScript for reliable notifications in menu bar apps
         let script = """
-            display notification "Notifications are working! You'll be notified when usage limits are reached." with title "Usagem" sound name "default"
+            display notification "Notifications are working! You'll be notified when usage limits are reached." with title "ClaudeBar" sound name "default"
             """
         
         var error: NSDictionary?

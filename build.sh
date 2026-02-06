@@ -1,9 +1,9 @@
 #!/bin/bash
-# Build script for Usagem
+# Build script for ClaudeBar
 
 set -e
 
-APP_NAME="Usagem"
+APP_NAME="ClaudeBar"
 BUILD_DIR=".build/release"
 APP_BUNDLE="$BUILD_DIR/$APP_NAME.app"
 

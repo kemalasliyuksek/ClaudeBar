@@ -221,7 +221,7 @@ struct UsageView: View {
             }
             
             HStack(spacing: 12) {
-                Link(destination: URL(string: "https://github.com/kemalasliyuksek/usagem")!) {
+                Link(destination: URL(string: "https://github.com/kemalasliyuksek/claudebar")!) {
                     HStack(spacing: 4) {
                         Image(systemName: "link")
                             .font(.system(size: 10))
@@ -232,7 +232,7 @@ struct UsageView: View {
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
                 
-                Link(destination: URL(string: "https://github.com/kemalasliyuksek/usagem/issues")!) {
+                Link(destination: URL(string: "https://github.com/kemalasliyuksek/claudebar/issues")!) {
                     HStack(spacing: 4) {
                         Image(systemName: "exclamationmark.bubble")
                             .font(.system(size: 10))

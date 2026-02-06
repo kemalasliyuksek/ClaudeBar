@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Menu bar application for monitoring Claude usage limits
 @main
-struct UsagemApp: App {
+struct ClaudeBarApp: App {
     @State private var service = UsageService()
     
     var body: some Scene {

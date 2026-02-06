@@ -1,7 +1,7 @@
-# Usagem
+# ClaudeBar
 
 <p align="center">
-  <img src="assets/usagem-icon.png" alt="Usagem Icon" width="128" height="128">
+  <img src="assets/claudebar-icon.png" alt="ClaudeBar Icon" width="128" height="128">
 </p>
 
 <p align="center">
@@ -65,27 +65,27 @@
 
 ### Download Pre-built Binary
 
-Download the latest `.app` from the [Releases](https://github.com/kemalasliyuksek/usagem/releases) page, then drag it to your Applications folder.
+Download the latest `.app` from the [Releases](https://github.com/kemalasliyuksek/claudebar/releases) page, then drag it to your Applications folder.
 
 ### Build from Source
 
 ```bash
-git clone https://github.com/kemalasliyuksek/usagem.git
-cd usagem
+git clone https://github.com/kemalasliyuksek/claudebar.git
+cd claudebar
 ./build.sh
 ```
 
-The app bundle will be created at `.build/release/Usagem.app`.
+The app bundle will be created at `.build/release/ClaudeBar.app`.
 
 To install:
 ```bash
-cp -r .build/release/Usagem.app /Applications/
+cp -r .build/release/ClaudeBar.app /Applications/
 ```
 
 ## Usage
 
 1. Ensure you're logged into Claude Code (`claude` command should work in terminal)
-2. Launch Usagem from Applications or Spotlight
+2. Launch ClaudeBar from Applications or Spotlight
 3. Click the gauge icon in your menu bar to view usage limits
 
 ### Settings
@@ -108,7 +108,7 @@ Click the ⓘ icon to view app information, credits, and links.
 
 ## How It Works
 
-Usagem reads OAuth credentials from the macOS Keychain that Claude Code stores when you log in. It then queries the Anthropic API for your current usage limits.
+ClaudeBar reads OAuth credentials from the macOS Keychain that Claude Code stores when you log in. It then queries the Anthropic API for your current usage limits.
 
 ### Architecture
 
@@ -123,14 +123,14 @@ Usagem reads OAuth credentials from the macOS Keychain that Claude Code stores w
                                                      ▼
 ┌─────────────────┐                      ┌───────────────────────────┐
 │                 │ GET /api/oauth/usage │                           │
-│  Anthropic API  │◀─────────────────────│          Usagem           │
+│  Anthropic API  │◀─────────────────────│        ClaudeBar          │
 │                 │─────────────────────▶│                           │
 └─────────────────┘    Usage data        └───────────────────────────┘
 ```
 
 ### Authentication Flow
 
-1. **Read Credentials** - Usagem reads tokens from macOS Keychain using:
+1. **Read Credentials** - ClaudeBar reads tokens from macOS Keychain using:
    ```bash
    security find-generic-password -s "Claude Code-credentials" -w
    ```
@@ -142,7 +142,7 @@ Usagem reads OAuth credentials from the macOS Keychain that Claude Code stores w
    anthropic-beta: oauth-2025-04-20
    ```
 
-3. **Token Refresh** - When the access token expires (HTTP 401), Usagem automatically refreshes it and updates the Keychain.
+3. **Token Refresh** - When the access token expires (HTTP 401), ClaudeBar automatically refreshes it and updates the Keychain.
 
 ### API Response
 
@@ -159,11 +159,11 @@ Usagem reads OAuth credentials from the macOS Keychain that Claude Code stores w
 
 ### Keychain Access
 
-On first launch, macOS may prompt you to allow Usagem to access the Keychain. Click **Always Allow** for seamless operation.
+On first launch, macOS may prompt you to allow ClaudeBar to access the Keychain. Click **Always Allow** for seamless operation.
 
 ### Token Sharing
 
-Usagem shares OAuth tokens with Claude Code. In rare cases, simultaneous token refresh may require re-login:
+ClaudeBar shares OAuth tokens with Claude Code. In rare cases, simultaneous token refresh may require re-login:
 
 ```bash
 claude logout && claude login
@@ -180,18 +180,18 @@ claude logout && claude login
 ## Project Structure
 
 ```
-usagem/
+claudebar/
 ├── Package.swift           # Swift Package Manager manifest
 ├── build.sh                # Build script
 ├── LICENSE                 # MIT License
 ├── README.md               # This file
 ├── assets/
-│   └── usagem-icon.png     # App icon source
+│   └── claudebar-icon.png  # App icon source
 ├── Resources/
 │   ├── AppIcon.icns        # macOS app icon
 │   └── Info.plist          # App metadata
-└── Sources/Usagem/
-    ├── UsagemApp.swift     # App entry point
+└── Sources/ClaudeBar/
+    ├── ClaudeBarApp.swift  # App entry point
     ├── UsageModels.swift   # Data models
     ├── UsageService.swift  # API client & business logic
     └── UsageView.swift     # SwiftUI views
@@ -211,8 +211,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/usagem.git
-cd usagem
+git clone https://github.com/YOUR_USERNAME/claudebar.git
+cd claudebar
 
 # Build in debug mode
 swift build

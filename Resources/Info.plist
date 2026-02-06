@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>Usagem</string>
+    <string>ClaudeBar</string>
     <key>CFBundleDisplayName</key>
-    <string>Usagem</string>
+    <string>ClaudeBar</string>
     <key>CFBundleIdentifier</key>
-    <string>com.usagem.app</string>
+    <string>com.claudebar.app</string>
     <key>CFBundleVersion</key>
     <string>1.0.0</string>
     <key>CFBundleShortVersionString</key>
@@ -15,7 +15,7 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleExecutable</key>
-    <string>Usagem</string>
+    <string>ClaudeBar</string>
     <key>LSMinimumSystemVersion</key>
     <string>14.0</string>
     <key>LSUIElement</key>
