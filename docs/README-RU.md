@@ -1,7 +1,7 @@
 # ClaudeBar
 
 <p align="center">
-  <img src="../assets/claudebar-icon.png" alt="Иконка ClaudeBar" width="128" height="128">
+  <img src="../assets/icons/claudebar-macOS-Dark-1024x1024@1x.png" alt="Иконка ClaudeBar" width="128" height="128">
 </p>
 
 <p align="center">
@@ -77,6 +77,11 @@
 ### Скачать готовый бинарник
 
 Скачайте последний `.app` со страницы [Releases](https://github.com/kemalasliyuksek/claudebar/releases), затем перетащите в папку Программы.
+
+> **Примечание:** Если macOS показывает «ClaudeBar повреждён и не может быть открыт», выполните следующую команду для удаления флага карантина:
+> ```bash
+> xattr -cr ClaudeBar.app
+> ```
 
 ### Сборка из исходного кода
 

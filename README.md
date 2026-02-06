@@ -1,7 +1,7 @@
 # ClaudeBar
 
 <p align="center">
-  <img src="assets/claudebar-icon.png" alt="ClaudeBar Icon" width="128" height="128">
+  <img src="assets/icons/claudebar-macOS-Dark-1024x1024@1x.png" alt="ClaudeBar Icon" width="128" height="128">
 </p>
 
 <p align="center">
@@ -75,6 +75,11 @@
 ### Download Pre-built Binary
 
 Download the latest `.app` from the [Releases](https://github.com/kemalasliyuksek/claudebar/releases) page, then drag it to your Applications folder.
+
+> **Note:** If macOS shows "ClaudeBar is damaged and can't be opened", run the following command to remove the quarantine flag:
+> ```bash
+> xattr -cr ClaudeBar.app
+> ```
 
 ### Build from Source
 
@@ -195,7 +200,7 @@ claudebar/
 ├── LICENSE                 # MIT License
 ├── README.md               # This file
 ├── assets/
-│   └── claudebar-icon.png  # App icon source
+│   └── icons/              # App icons
 ├── Resources/
 │   ├── AppIcon.icns        # macOS app icon
 │   └── Info.plist          # App metadata

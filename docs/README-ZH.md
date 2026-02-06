@@ -1,7 +1,7 @@
 # ClaudeBar
 
 <p align="center">
-  <img src="../assets/claudebar-icon.png" alt="ClaudeBar 图标" width="128" height="128">
+  <img src="../assets/icons/claudebar-macOS-Dark-1024x1024@1x.png" alt="ClaudeBar 图标" width="128" height="128">
 </p>
 
 <p align="center">
@@ -77,6 +77,11 @@
 ### 下载预编译版本
 
 从 [Releases](https://github.com/kemalasliyuksek/claudebar/releases) 页面下载最新的 `.app` 文件，然后将其拖入"应用程序"文件夹。
+
+> **注意：** 如果 macOS 提示"ClaudeBar 已损坏，无法打开"，请运行以下命令移除隔离标志：
+> ```bash
+> xattr -cr ClaudeBar.app
+> ```
 
 ### 从源代码编译
 

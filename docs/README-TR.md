@@ -1,7 +1,7 @@
 # ClaudeBar
 
 <p align="center">
-  <img src="../assets/claudebar-icon.png" alt="ClaudeBar Simgesi" width="128" height="128">
+  <img src="../assets/icons/claudebar-macOS-Dark-1024x1024@1x.png" alt="ClaudeBar Simgesi" width="128" height="128">
 </p>
 
 <p align="center">
@@ -75,6 +75,11 @@
 ### Önceden Derlenmiş Dosyayı İndirin
 
 En son `.app` dosyasını [Releases](https://github.com/kemalasliyuksek/claudebar/releases) sayfasından indirin ve Uygulamalar klasörünüze sürükleyin.
+
+> **Not:** macOS "ClaudeBar hasarlı ve açılamıyor" hatası gösterirse, karantina bayrağını kaldırmak için şu komutu çalıştırın:
+> ```bash
+> xattr -cr ClaudeBar.app
+> ```
 
 ### Kaynaktan Derleyin
 

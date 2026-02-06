@@ -1,7 +1,7 @@
 # ClaudeBar
 
 <p align="center">
-  <img src="../assets/claudebar-icon.png" alt="ClaudeBar アイコン" width="128" height="128">
+  <img src="../assets/icons/claudebar-macOS-Dark-1024x1024@1x.png" alt="ClaudeBar アイコン" width="128" height="128">
 </p>
 
 <p align="center">
@@ -77,6 +77,11 @@
 ### ビルド済みバイナリをダウンロード
 
 [Releases](https://github.com/kemalasliyuksek/claudebar/releases) ページから最新の `.app` をダウンロードし、アプリケーションフォルダにドラッグしてください。
+
+> **注意:** macOS で「ClaudeBar は壊れているため開けません」と表示された場合、以下のコマンドを実行して検疫フラグを削除してください：
+> ```bash
+> xattr -cr ClaudeBar.app
+> ```
 
 ### ソースからビルド
 

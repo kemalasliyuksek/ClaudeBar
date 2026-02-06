@@ -1,7 +1,7 @@
 # ClaudeBar
 
 <p align="center">
-  <img src="../assets/claudebar-icon.png" alt="Icône ClaudeBar" width="128" height="128">
+  <img src="../assets/icons/claudebar-macOS-Dark-1024x1024@1x.png" alt="Icône ClaudeBar" width="128" height="128">
 </p>
 
 <p align="center">
@@ -77,6 +77,11 @@
 ### Télécharger le Binaire Pré-compilé
 
 Téléchargez le dernier `.app` depuis la page [Releases](https://github.com/kemalasliyuksek/claudebar/releases), puis faites-le glisser dans votre dossier Applications.
+
+> **Note :** Si macOS affiche « ClaudeBar est endommagé et ne peut pas être ouvert », exécutez la commande suivante pour supprimer le drapeau de quarantaine :
+> ```bash
+> xattr -cr ClaudeBar.app
+> ```
 
 ### Compiler depuis le Code Source
 

@@ -1,7 +1,7 @@
 # ClaudeBar
 
 <p align="center">
-  <img src="../assets/claudebar-icon.png" alt="ClaudeBar आइकन" width="128" height="128">
+  <img src="../assets/icons/claudebar-macOS-Dark-1024x1024@1x.png" alt="ClaudeBar आइकन" width="128" height="128">
 </p>
 
 <p align="center">
@@ -77,6 +77,11 @@
 ### पूर्व-निर्मित बाइनरी डाउनलोड करें
 
 [Releases](https://github.com/kemalasliyuksek/claudebar/releases) पेज से नवीनतम `.app` डाउनलोड करें, फिर इसे अपने Applications फ़ोल्डर में ड्रैग करें।
+
+> **नोट:** यदि macOS "ClaudeBar is damaged and can't be opened" त्रुटि दिखाता है, तो क्वारंटाइन फ़्लैग हटाने के लिए यह कमांड चलाएँ:
+> ```bash
+> xattr -cr ClaudeBar.app
+> ```
 
 ### स्रोत से बनाएँ
 

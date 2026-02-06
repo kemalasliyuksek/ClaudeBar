@@ -1,7 +1,7 @@
 # ClaudeBar
 
 <p align="center">
-  <img src="../assets/claudebar-icon.png" alt="Ícone ClaudeBar" width="128" height="128">
+  <img src="../assets/icons/claudebar-macOS-Dark-1024x1024@1x.png" alt="Ícone ClaudeBar" width="128" height="128">
 </p>
 
 <p align="center">
@@ -77,6 +77,11 @@
 ### Baixar Binário Pré-compilado
 
 Baixe o `.app` mais recente na página de [Releases](https://github.com/kemalasliyuksek/claudebar/releases) e arraste para sua pasta Aplicativos.
+
+> **Nota:** Se o macOS mostrar "ClaudeBar está danificado e não pode ser aberto", execute o seguinte comando para remover a flag de quarentena:
+> ```bash
+> xattr -cr ClaudeBar.app
+> ```
 
 ### Compilar a partir do Código Fonte
 

@@ -1,7 +1,7 @@
 # ClaudeBar
 
 <p align="center">
-  <img src="../assets/claudebar-icon.png" alt="أيقونة ClaudeBar" width="128" height="128">
+  <img src="../assets/icons/claudebar-macOS-Dark-1024x1024@1x.png" alt="أيقونة ClaudeBar" width="128" height="128">
 </p>
 
 <p align="center">
@@ -77,6 +77,11 @@
 ### تحميل الملف الثنائي المُجمَّع مسبقاً
 
 قم بتحميل أحدث ملف `.app` من صفحة [Releases](https://github.com/kemalasliyuksek/claudebar/releases)، ثم اسحبه إلى مجلد التطبيقات.
+
+> **ملاحظة:** إذا أظهر macOS رسالة "ClaudeBar is damaged and can't be opened"، قم بتشغيل الأمر التالي لإزالة علامة الحجر:
+> ```bash
+> xattr -cr ClaudeBar.app
+> ```
 
 ### البناء من المصدر
 
