@@ -39,7 +39,7 @@ struct ExtraUsage: Codable {
     }
     
     var limitAmount: String {
-        guard let limit = monthlyLimit else { return "unlimited" }
+        guard let limit = monthlyLimit else { return L("usage.unlimited") }
         return String(format: "$%.0f", Double(limit) / 100)
     }
     
@@ -56,15 +56,15 @@ struct ExtraUsage: Codable {
         let now = Date()
         
         var components = calendar.dateComponents([.year, .month], from: now)
-        guard let month = components.month else { return "next month" }
+        guard let month = components.month else { return L("usage.next_month") }
         components.month = month + 1
         components.day = 1
         
-        guard let nextMonth = calendar.date(from: components) else { return "next month" }
+        guard let nextMonth = calendar.date(from: components) else { return L("usage.next_month") }
         
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "MMM d"
+        formatter.locale = activeLocale()
+        formatter.setLocalizedDateFormatFromTemplate("MMM d")
         return formatter.string(from: nextMonth)
     }
 }
@@ -103,12 +103,11 @@ struct UsageBucket: Codable {
             let hours = Int(seconds) / 3600
             let minutes = (Int(seconds) % 3600) / 60
             if hours > 0 {
-                return "Resets in \(hours) hr \(minutes) min"
+                return L("reset.in_hours_minutes", hours, minutes)
             }
-            return "Resets in \(minutes) min"
+            return L("reset.in_minutes", minutes)
 
         case .absolute:
-            // Round up to nearest hour if within last minute
             let calendar = Calendar.current
             let minute = calendar.component(.minute, from: target)
             let roundedDate: Date
@@ -118,10 +117,15 @@ struct UsageBucket: Codable {
                 roundedDate = target
             }
             
+            let locale = activeLocale()
             let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US")
-            formatter.dateFormat = "EEE h:mm a"
-            return "Resets \(formatter.string(from: roundedDate))"
+            formatter.locale = locale
+            formatter.dateStyle = .none
+            formatter.timeStyle = .short
+            let dayFormatter = DateFormatter()
+            dayFormatter.locale = locale
+            dayFormatter.setLocalizedDateFormatFromTemplate("EEE")
+            return L("reset.at", "\(dayFormatter.string(from: roundedDate)) \(formatter.string(from: roundedDate))")
         }
     }
 

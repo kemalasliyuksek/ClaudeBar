@@ -1,0 +1,89 @@
+/* ClaudeBar - Русский */
+
+/* Section Headers */
+"section.plan_usage" = "Лимиты использования плана Claude";
+"section.weekly" = "Недельные лимиты";
+"section.extra_usage" = "Дополнительное использование";
+
+/* Usage Rows */
+"usage.current_session" = "Текущая сессия";
+"usage.all_models" = "Все модели";
+"usage.sonnet_only" = "Только Sonnet";
+"usage.opus_only" = "Только Opus";
+"usage.sonnet_not_used" = "Вы ещё не использовали Sonnet";
+"usage.percent_used" = "Использовано %d%%";
+"usage.spent" = "Потрачено %@";
+"usage.resets_limit" = "Сброс %@ · Лимит: %@";
+"usage.unlimited" = "без ограничений";
+"usage.next_month" = "в следующем месяце";
+
+/* Reset Time */
+"reset.in_hours_minutes" = "Сброс через %d ч %d мин";
+"reset.in_minutes" = "Сброс через %d мин";
+"reset.at" = "Сброс %@";
+
+/* Time Duration */
+"time.hours_minutes" = "%d ч %d мин";
+"time.minutes" = "%d мин";
+
+/* Plan Badge */
+"plan.badge" = "План %@";
+
+/* Settings */
+"settings.title" = "Настройки";
+"settings.language" = "Язык";
+"settings.language.system" = "Система";
+"settings.launch_at_login" = "Запускать при входе";
+"settings.show_percentage" = "Показывать % в строке меню";
+"settings.refresh_interval" = "Интервал обновления";
+"settings.notifications" = "Уведомления";
+"settings.test" = "Тест";
+"settings.notify_50" = "Уведомить при 50% использования";
+"settings.notify_75" = "Уведомить при 75% использования";
+"settings.notify_limit" = "Уведомить при достижении лимита";
+"settings.notify_reset" = "Уведомить при сбросе лимита";
+
+/* About */
+"about.title" = "О программе";
+"about.description" = "Лёгкое приложение в строке меню для мониторинга лимитов использования Claude.";
+"about.created_by" = "Разработчик";
+"about.github" = "GitHub";
+"about.report_issue" = "Сообщить о проблеме";
+
+/* Footer */
+"footer.last_updated" = "Обновлено: %@";
+"footer.less_than_minute" = "менее минуты назад";
+"footer.minutes_ago" = "%d мин. назад";
+"footer.hours_ago" = "%d ч. назад";
+
+/* Loading & Errors */
+"loading" = "Загрузка...";
+"error.not_logged_in" = "Вход не выполнен";
+"error.no_access_token" = "Нет токена доступа";
+"error.invalid_url" = "Недопустимый URL";
+"error.http" = "HTTP %d";
+"error.parse" = "Ошибка разбора";
+"error.no_refresh_token" = "Нет токена обновления";
+"error.token_refresh_failed" = "Не удалось обновить токен";
+"error.request_failed" = "Запрос не выполнен";
+
+/* Notifications */
+"notification.50_title" = "Предупреждение: 50%% использовано";
+"notification.50_body" = "Вы использовали 50%% вашего лимита: %@.";
+"notification.75_title" = "Предупреждение: 75%% использовано";
+"notification.75_body" = "Вы использовали 75%% вашего лимита: %@.";
+"notification.limit_title" = "Лимит достигнут";
+"notification.limit_body" = "Вы достигли лимита: %@.";
+"notification.limit_body_resets" = "Вы достигли лимита: %@. Сброс через %@.";
+"notification.reset_title" = "Лимит сброшен";
+"notification.reset_body" = "Ваш лимит (%@) сброшен. Вы можете продолжить использование Claude.";
+"notification.test_50_body" = "Вы использовали 50%% лимита текущей сессии.";
+"notification.test_75_body" = "Вы использовали 75%% лимита текущей сессии.";
+"notification.test_limit_body" = "Вы достигли лимита текущей сессии. Сброс через %@.";
+"notification.test_reset_body" = "Лимит текущей сессии сброшен. Вы можете продолжить использование Claude.";
+
+/* Limit Names */
+"limit.current_session" = "Текущая сессия";
+"limit.weekly" = "Недельный лимит";
+"limit.sonnet_weekly" = "Sonnet недельный";
+"limit.extra_usage" = "Дополнительное использование";

@@ -1,0 +1,89 @@
+/* ClaudeBar - 简体中文 */
+
+/* Section Headers */
+"section.plan_usage" = "Claude 计划使用限额";
+"section.weekly" = "每周限额";
+"section.extra_usage" = "额外用量";
+
+/* Usage Rows */
+"usage.current_session" = "当前会话";
+"usage.all_models" = "所有模型";
+"usage.sonnet_only" = "仅 Sonnet";
+"usage.opus_only" = "仅 Opus";
+"usage.sonnet_not_used" = "您尚未使用过 Sonnet";
+"usage.percent_used" = "已使用 %d%%";
+"usage.spent" = "已消费 %@";
+"usage.resets_limit" = "%@ 重置 · 限额：%@";
+"usage.unlimited" = "无限制";
+"usage.next_month" = "下个月";
+
+/* Reset Time */
+"reset.in_hours_minutes" = "%d 小时 %d 分钟后重置";
+"reset.in_minutes" = "%d 分钟后重置";
+"reset.at" = "%@ 重置";
+
+/* Time Duration */
+"time.hours_minutes" = "%d 小时 %d 分钟";
+"time.minutes" = "%d 分钟";
+
+/* Plan Badge */
+"plan.badge" = "%@ 计划";
+
+/* Settings */
+"settings.title" = "设置";
+"settings.language" = "语言";
+"settings.language.system" = "系统";
+"settings.launch_at_login" = "登录时启动";
+"settings.show_percentage" = "在菜单栏显示 %";
+"settings.refresh_interval" = "刷新间隔";
+"settings.notifications" = "通知";
+"settings.test" = "测试";
+"settings.notify_50" = "使用达 50% 时通知";
+"settings.notify_75" = "使用达 75% 时通知";
+"settings.notify_limit" = "达到限额时通知";
+"settings.notify_reset" = "限额重置时通知";
+
+/* About */
+"about.title" = "关于";
+"about.description" = "一款用于监控 Claude 使用限额的轻量级菜单栏应用。";
+"about.created_by" = "开发者";
+"about.github" = "GitHub";
+"about.report_issue" = "报告问题";
+
+/* Footer */
+"footer.last_updated" = "上次更新：%@";
+"footer.less_than_minute" = "不到一分钟前";
+"footer.minutes_ago" = "%d 分钟前";
+"footer.hours_ago" = "%d 小时前";
+
+/* Loading & Errors */
+"loading" = "加载中...";
+"error.not_logged_in" = "未登录";
+"error.no_access_token" = "无访问令牌";
+"error.invalid_url" = "无效 URL";
+"error.http" = "HTTP %d";
+"error.parse" = "解析错误";
+"error.no_refresh_token" = "无刷新令牌";
+"error.token_refresh_failed" = "令牌刷新失败";
+"error.request_failed" = "请求失败";
+
+/* Notifications */
+"notification.50_title" = "50%% 用量警告";
+"notification.50_body" = "您已使用 %@ 的 50%%。";
+"notification.75_title" = "75%% 用量警告";
+"notification.75_body" = "您已使用 %@ 的 75%%。";
+"notification.limit_title" = "已达限额";
+"notification.limit_body" = "您已达到 %@ 限额。";
+"notification.limit_body_resets" = "您已达到 %@ 限额。将在 %@ 后重置。";
+"notification.reset_title" = "限额已重置";
+"notification.reset_body" = "您的 %@ 已重置。您可以继续使用 Claude。";
+"notification.test_50_body" = "您已使用当前会话限额的 50%%。";
+"notification.test_75_body" = "您已使用当前会话限额的 75%%。";
+"notification.test_limit_body" = "您已达到当前会话限额。将在 %@ 后重置。";
+"notification.test_reset_body" = "您的当前会话限额已重置。您可以继续使用 Claude。";
+
+/* Limit Names */
+"limit.current_session" = "当前会话";
+"limit.weekly" = "每周限额";
+"limit.sonnet_weekly" = "Sonnet 每周";
+"limit.extra_usage" = "额外用量";

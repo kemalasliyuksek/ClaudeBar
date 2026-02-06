@@ -37,6 +37,8 @@
 - **Monitoramento de Uso em Tempo Real** - Veja os limites de sessão atual e semanais de relance
 - **Selo do Plano** - Exibe sua assinatura atual (Pro, Max, Team)
 - **Suporte a Uso Extra** - Rastreie créditos pay-as-you-go quando habilitado
+- **Barras de progresso coloridas** - Verde, amarelo, laranja, vermelho com base na porcentagem de uso
+- **Suporte multilíngue** - Inglês, turco, chinês, espanhol, russo com seletor de idioma no app
 - **Notificações Personalizáveis** - Receba notificações em 50%, 75%, 100% ou na reinicialização
 - **Atualização Automática** - Intervalo de atualização configurável (30s, 1m, 2m, 5m)
 - **Iniciar no Login** - Opcionalmente inicie com seu Mac
@@ -112,6 +114,7 @@ Clique no ícone ⚙️ para configurar:
 |-------------|-----------|
 | Iniciar no login | Iniciar automaticamente ao fazer login |
 | Mostrar % na barra de menu | Exibir porcentagem ao lado do ícone da barra de menu |
+| Idioma | Escolha o idioma do app (Sistema, English, Türkçe, 中文, Español, Русский) |
 | Intervalo de atualização | Com que frequência buscar dados de uso (30s - 5m) |
 | Notificar em 50% | Enviar notificação em 50% de uso |
 | Notificar em 75% | Enviar notificação em 75% de uso |

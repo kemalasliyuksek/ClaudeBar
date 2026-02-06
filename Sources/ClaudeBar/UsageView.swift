@@ -19,11 +19,10 @@ struct UsageView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if let usage = service.usage {
-                // Current session section
-                sectionHeader("Claude plan usage limits", showPlan: true)
+                sectionHeader(L("section.plan_usage"), showPlan: true)
                 if let bucket = usage.fiveHour {
                     usageRow(
-                        title: "Current session",
+                        title: L("usage.current_session"),
                         subtitle: bucket.resetText(style: .relative),
                         bucket: bucket
                     )
@@ -31,12 +30,11 @@ struct UsageView: View {
 
                 divider
 
-                // Weekly limits section
-                sectionHeader("Weekly limits")
+                sectionHeader(L("section.weekly"))
 
                 if let bucket = usage.sevenDay {
                     usageRow(
-                        title: "All models",
+                        title: L("usage.all_models"),
                         subtitle: bucket.resetText(style: .absolute),
                         bucket: bucket
                     )
@@ -44,24 +42,23 @@ struct UsageView: View {
 
                 if let bucket = usage.sevenDaySonnet {
                     usageRow(
-                        title: "Sonnet only",
-                        subtitle: bucket.percent == 0 ? "You haven't used Sonnet yet" : bucket.resetText(style: .absolute),
+                        title: L("usage.sonnet_only"),
+                        subtitle: bucket.percent == 0 ? L("usage.sonnet_not_used") : bucket.resetText(style: .absolute),
                         bucket: bucket
                     )
                 }
 
                 if let bucket = usage.sevenDayOpus, bucket.percent > 0 {
                     usageRow(
-                        title: "Opus only",
+                        title: L("usage.opus_only"),
                         subtitle: bucket.resetText(style: .absolute),
                         bucket: bucket
                     )
                 }
                 
-                // Extra usage section
                 if let extra = usage.extraUsage, extra.isEnabled {
                     divider
-                    sectionHeader("Extra usage")
+                    sectionHeader(L("section.extra_usage"))
                     extraUsageRow(extra)
                 }
 
@@ -85,7 +82,9 @@ struct UsageView: View {
             
             footer
         }
-        .frame(width: 340)
+        .frame(minWidth: 340, idealWidth: 340)
+        .fixedSize(horizontal: true, vertical: false)
+        .id(service.languageRefreshID)
     }
 
     // MARK: - Section Header
@@ -109,7 +108,7 @@ struct UsageView: View {
     // MARK: - Plan Badge
     
     private func planBadge(_ plan: String) -> some View {
-        Text("\(plan.capitalized) Plan")
+        Text(L("plan.badge", plan.capitalized))
             .font(.system(size: 10, weight: .medium))
             .foregroundStyle(.white)
             .padding(.horizontal, 8)
@@ -122,7 +121,6 @@ struct UsageView: View {
 
     private func usageRow(title: String, subtitle: String?, bucket: UsageBucket) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            // First line: title + progress bar + percentage
             HStack(spacing: 12) {
                 Text(title)
                     .font(.system(size: 13))
@@ -130,13 +128,12 @@ struct UsageView: View {
 
                 progressBar(percent: bucket.percent)
 
-                Text("\(bucket.percent)% used")
+                Text(L("usage.percent_used", bucket.percent))
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
-                    .frame(width: 65, alignment: .trailing)
+                    .fixedSize(horizontal: true, vertical: false)
             }
 
-            // Second line: subtitle
             if let subtitle {
                 Text(subtitle)
                     .font(.system(size: 11))
@@ -151,22 +148,20 @@ struct UsageView: View {
     
     private func extraUsageRow(_ extra: ExtraUsage) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            // First line: spent + progress bar + percentage
             HStack(spacing: 12) {
-                Text("\(extra.usedAmount) spent")
+                Text(L("usage.spent", extra.usedAmount))
                     .font(.system(size: 13))
                     .frame(width: 100, alignment: .leading)
                 
                 progressBar(percent: extra.percent)
                 
-                Text("\(extra.percent)% used")
+                Text(L("usage.percent_used", extra.percent))
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
-                    .frame(width: 65, alignment: .trailing)
+                    .fixedSize(horizontal: true, vertical: false)
             }
             
-            // Second line: reset date + limit
-            Text("Resets \(extra.resetDateText) · Limit: \(extra.limitAmount)")
+            Text(L("usage.resets_limit", extra.resetDateText, extra.limitAmount))
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
         }
@@ -202,16 +197,16 @@ struct UsageView: View {
     
     private var aboutPanel: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("About")
+            Text(L("about.title"))
                 .font(.system(size: 13, weight: .semibold))
             
-            Text("A lightweight menu bar app for monitoring Claude usage limits.")
+            Text(L("about.description"))
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             
             VStack(alignment: .leading, spacing: 6) {
-                Text("Created by")
+                Text(L("about.created_by"))
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
                 
@@ -235,7 +230,7 @@ struct UsageView: View {
                         HStack(spacing: 4) {
                             Image(systemName: "link")
                                 .font(.system(size: 10))
-                            Text("GitHub")
+                            Text(L("about.github"))
                                 .font(.system(size: 11))
                         }
                     }
@@ -248,7 +243,7 @@ struct UsageView: View {
                         HStack(spacing: 4) {
                             Image(systemName: "exclamationmark.bubble")
                                 .font(.system(size: 10))
-                            Text("Report Issue")
+                            Text(L("about.report_issue"))
                                 .font(.system(size: 11))
                         }
                     }
@@ -271,11 +266,10 @@ struct UsageView: View {
     
     private var settingsPanel: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Settings")
+            Text(L("settings.title"))
                 .font(.system(size: 13, weight: .semibold))
             
-            // General settings
-            SettingsRow(title: "Launch at login") {
+            SettingsRow(title: L("settings.launch_at_login")) {
                 Toggle("", isOn: Binding(
                     get: { SMAppService.mainApp.status == .enabled },
                     set: { newValue in
@@ -286,7 +280,7 @@ struct UsageView: View {
                 .controlSize(.small)
             }
             
-            SettingsRow(title: "Show % in menu bar") {
+            SettingsRow(title: L("settings.show_percentage")) {
                 Toggle("", isOn: Binding(
                     get: { service.showPercentage },
                     set: { service.showPercentage = $0 }
@@ -295,7 +289,20 @@ struct UsageView: View {
                 .controlSize(.small)
             }
             
-            SettingsRow(title: "Refresh interval") {
+            SettingsRow(title: L("settings.language")) {
+                Picker("", selection: Binding(
+                    get: { service.appLanguage },
+                    set: { service.appLanguage = $0 }
+                )) {
+                    ForEach(AppLanguage.allCases, id: \.self) { lang in
+                        Text(lang.displayName).tag(lang)
+                    }
+                }
+                .pickerStyle(.menu)
+                .frame(width: 100)
+            }
+            
+            SettingsRow(title: L("settings.refresh_interval")) {
                 Picker("", selection: Binding(
                     get: { service.refreshInterval },
                     set: { service.refreshInterval = $0 }
@@ -312,19 +319,18 @@ struct UsageView: View {
             Divider()
                 .padding(.vertical, 2)
             
-            // Notification settings
             HStack {
-                Text("Notifications")
+                Text(L("settings.notifications"))
                     .font(.system(size: 12, weight: .medium))
                 Spacer()
-                Button("Test") {
+                Button(L("settings.test")) {
                     service.sendTestNotification()
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.mini)
             }
             
-            SettingsRow(title: "Notify when 50% used") {
+            SettingsRow(title: L("settings.notify_50")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyAt50 },
                     set: { service.notifyAt50 = $0 }
@@ -333,7 +339,7 @@ struct UsageView: View {
                 .controlSize(.small)
             }
             
-            SettingsRow(title: "Notify when 75% used") {
+            SettingsRow(title: L("settings.notify_75")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyAt75 },
                     set: { service.notifyAt75 = $0 }
@@ -342,7 +348,7 @@ struct UsageView: View {
                 .controlSize(.small)
             }
             
-            SettingsRow(title: "Notify when limit reached") {
+            SettingsRow(title: L("settings.notify_limit")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyAt100 },
                     set: { service.notifyAt100 = $0 }
@@ -351,7 +357,7 @@ struct UsageView: View {
                 .controlSize(.small)
             }
             
-            SettingsRow(title: "Notify when limit resets") {
+            SettingsRow(title: L("settings.notify_reset")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyOnReset },
                     set: { service.notifyOnReset = $0 }
@@ -369,7 +375,7 @@ struct UsageView: View {
     private var footer: some View {
         HStack(spacing: 6) {
             if let date = service.lastUpdate {
-                Text("Last updated: \(relativeTime(from: date))")
+                Text(L("footer.last_updated", relativeTime(from: date)))
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
             }
@@ -429,13 +435,13 @@ struct UsageView: View {
     private func relativeTime(from date: Date) -> String {
         let seconds = Int(Date().timeIntervalSince(date))
         if seconds < 60 {
-            return "less than a minute ago"
+            return L("footer.less_than_minute")
         } else if seconds < 3600 {
             let mins = seconds / 60
-            return "\(mins) minute\(mins == 1 ? "" : "s") ago"
+            return L("footer.minutes_ago", mins)
         } else {
             let hrs = seconds / 3600
-            return "\(hrs) hour\(hrs == 1 ? "" : "s") ago"
+            return L("footer.hours_ago", hrs)
         }
     }
 
@@ -444,7 +450,7 @@ struct UsageView: View {
     private var loadingView: some View {
         HStack(spacing: 8) {
             ProgressView().controlSize(.small)
-            Text("Loading...")
+            Text(L("loading"))
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
         }

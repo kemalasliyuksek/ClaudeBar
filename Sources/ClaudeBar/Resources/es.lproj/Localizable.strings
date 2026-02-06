@@ -1,0 +1,89 @@
+/* ClaudeBar - Español */
+
+/* Section Headers */
+"section.plan_usage" = "Límites de uso del plan Claude";
+"section.weekly" = "Límites semanales";
+"section.extra_usage" = "Uso extra";
+
+/* Usage Rows */
+"usage.current_session" = "Sesión actual";
+"usage.all_models" = "Todos los modelos";
+"usage.sonnet_only" = "Solo Sonnet";
+"usage.opus_only" = "Solo Opus";
+"usage.sonnet_not_used" = "Aún no has usado Sonnet";
+"usage.percent_used" = "%d%% usado";
+"usage.spent" = "%@ gastado";
+"usage.resets_limit" = "Se restablece el %@ · Límite: %@";
+"usage.unlimited" = "ilimitado";
+"usage.next_month" = "el próximo mes";
+
+/* Reset Time */
+"reset.in_hours_minutes" = "Se restablece en %d h %d min";
+"reset.in_minutes" = "Se restablece en %d min";
+"reset.at" = "Se restablece el %@";
+
+/* Time Duration */
+"time.hours_minutes" = "%d h %d min";
+"time.minutes" = "%d min";
+
+/* Plan Badge */
+"plan.badge" = "Plan %@";
+
+/* Settings */
+"settings.title" = "Configuración";
+"settings.language" = "Idioma";
+"settings.language.system" = "Sistema";
+"settings.launch_at_login" = "Iniciar al arrancar";
+"settings.show_percentage" = "Mostrar % en la barra de menú";
+"settings.refresh_interval" = "Intervalo de actualización";
+"settings.notifications" = "Notificaciones";
+"settings.test" = "Probar";
+"settings.notify_50" = "Notificar al 50% de uso";
+"settings.notify_75" = "Notificar al 75% de uso";
+"settings.notify_limit" = "Notificar al alcanzar el límite";
+"settings.notify_reset" = "Notificar al restablecerse";
+
+/* About */
+"about.title" = "Acerca de";
+"about.description" = "Una aplicación ligera de barra de menú para monitorear los límites de uso de Claude.";
+"about.created_by" = "Creado por";
+"about.github" = "GitHub";
+"about.report_issue" = "Reportar problema";
+
+/* Footer */
+"footer.last_updated" = "Última actualización: %@";
+"footer.less_than_minute" = "hace menos de un minuto";
+"footer.minutes_ago" = "hace %d minuto(s)";
+"footer.hours_ago" = "hace %d hora(s)";
+
+/* Loading & Errors */
+"loading" = "Cargando...";
+"error.not_logged_in" = "No se ha iniciado sesión";
+"error.no_access_token" = "Sin token de acceso";
+"error.invalid_url" = "URL no válida";
+"error.http" = "HTTP %d";
+"error.parse" = "Error de análisis";
+"error.no_refresh_token" = "Sin token de actualización";
+"error.token_refresh_failed" = "Error al actualizar el token";
+"error.request_failed" = "Solicitud fallida";
+
+/* Notifications */
+"notification.50_title" = "Alerta de uso al 50%%";
+"notification.50_body" = "Has usado el 50%% de tu %@.";
+"notification.75_title" = "Alerta de uso al 75%%";
+"notification.75_body" = "Has usado el 75%% de tu %@.";
+"notification.limit_title" = "Límite alcanzado";
+"notification.limit_body" = "Has alcanzado tu %@.";
+"notification.limit_body_resets" = "Has alcanzado tu %@. Se restablece en %@.";
+"notification.reset_title" = "Límite restablecido";
+"notification.reset_body" = "Tu %@ se ha restablecido. Puedes seguir usando Claude.";
+"notification.test_50_body" = "Has usado el 50%% del límite de tu sesión actual.";
+"notification.test_75_body" = "Has usado el 75%% del límite de tu sesión actual.";
+"notification.test_limit_body" = "Has alcanzado el límite de tu sesión actual. Se restablece en %@.";
+"notification.test_reset_body" = "El límite de tu sesión actual se ha restablecido. Puedes seguir usando Claude.";
+
+/* Limit Names */
+"limit.current_session" = "sesión actual";
+"limit.weekly" = "límite semanal";
+"limit.sonnet_weekly" = "Sonnet semanal";
+"limit.extra_usage" = "uso extra";

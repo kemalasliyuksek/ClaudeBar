@@ -1,0 +1,89 @@
+/* ClaudeBar - Türkçe */
+
+/* Section Headers */
+"section.plan_usage" = "Claude plan kullanım limitleri";
+"section.weekly" = "Haftalık limitler";
+"section.extra_usage" = "Ekstra kullanım";
+
+/* Usage Rows */
+"usage.current_session" = "Mevcut oturum";
+"usage.all_models" = "Tüm modeller";
+"usage.sonnet_only" = "Yalnızca Sonnet";
+"usage.opus_only" = "Yalnızca Opus";
+"usage.sonnet_not_used" = "Henüz Sonnet kullanmadınız";
+"usage.percent_used" = "%%%d kullanıldı";
+"usage.spent" = "%@ harcandı";
+"usage.resets_limit" = "%@ tarihinde sıfırlanır · Limit: %@";
+"usage.unlimited" = "limitsiz";
+"usage.next_month" = "gelecek ay";
+
+/* Reset Time */
+"reset.in_hours_minutes" = "%d sa %d dk sonra sıfırlanır";
+"reset.in_minutes" = "%d dk sonra sıfırlanır";
+"reset.at" = "%@ tarihinde sıfırlanır";
+
+/* Time Duration */
+"time.hours_minutes" = "%d sa %d dk";
+"time.minutes" = "%d dk";
+
+/* Plan Badge */
+"plan.badge" = "%@ Planı";
+
+/* Settings */
+"settings.title" = "Ayarlar";
+"settings.language" = "Dil";
+"settings.language.system" = "Sistem";
+"settings.launch_at_login" = "Girişte başlat";
+"settings.show_percentage" = "Menü çubuğunda % göster";
+"settings.refresh_interval" = "Yenileme aralığı";
+"settings.notifications" = "Bildirimler";
+"settings.test" = "Test";
+"settings.notify_50" = "%50 kullanımda bildir";
+"settings.notify_75" = "%75 kullanımda bildir";
+"settings.notify_limit" = "Limite ulaşıldığında bildir";
+"settings.notify_reset" = "Sıfırlandığında bildir";
+
+/* About */
+"about.title" = "Hakkında";
+"about.description" = "Claude kullanım limitlerini izlemek için hafif bir menü çubuğu uygulaması.";
+"about.created_by" = "Geliştirici";
+"about.github" = "GitHub";
+"about.report_issue" = "Sorun Bildir";
+
+/* Footer */
+"footer.last_updated" = "Son güncelleme: %@";
+"footer.less_than_minute" = "bir dakikadan az";
+"footer.minutes_ago" = "%d dakika önce";
+"footer.hours_ago" = "%d saat önce";
+
+/* Loading & Errors */
+"loading" = "Yükleniyor...";
+"error.not_logged_in" = "Giriş yapılmamış";
+"error.no_access_token" = "Erişim anahtarı yok";
+"error.invalid_url" = "Geçersiz URL";
+"error.http" = "HTTP %d";
+"error.parse" = "Ayrıştırma hatası";
+"error.no_refresh_token" = "Yenileme anahtarı yok";
+"error.token_refresh_failed" = "Anahtar yenileme başarısız";
+"error.request_failed" = "İstek başarısız";
+
+/* Notifications */
+"notification.50_title" = "%%50 Kullanım Uyarısı";
+"notification.50_body" = "%@ limitinizin %%50'sini kullandınız.";
+"notification.75_title" = "%%75 Kullanım Uyarısı";
+"notification.75_body" = "%@ limitinizin %%75'ini kullandınız.";
+"notification.limit_title" = "Limite Ulaşıldı";
+"notification.limit_body" = "%@ limitinize ulaştınız.";
+"notification.limit_body_resets" = "%@ limitinize ulaştınız. %@ sonra sıfırlanır.";
+"notification.reset_title" = "Limit Sıfırlandı";
+"notification.reset_body" = "%@ limitiniz sıfırlandı. Claude kullanmaya devam edebilirsiniz.";
+"notification.test_50_body" = "Mevcut oturum limitinizin %%50'sini kullandınız.";
+"notification.test_75_body" = "Mevcut oturum limitinizin %%75'ini kullandınız.";
+"notification.test_limit_body" = "Mevcut oturum limitinize ulaştınız. %@ sonra sıfırlanır.";
+"notification.test_reset_body" = "Mevcut oturum limitiniz sıfırlandı. Claude kullanmaya devam edebilirsiniz.";
+
+/* Limit Names */
+"limit.current_session" = "Mevcut oturum";
+"limit.weekly" = "Haftalık limit";
+"limit.sonnet_weekly" = "Sonnet haftalık";
+"limit.extra_usage" = "Ekstra kullanım";

@@ -14,6 +14,7 @@ final class UsageService {
     private(set) var lastUpdate: Date?
     private(set) var isLoading = false
     private(set) var planType: String?
+    private(set) var languageRefreshID = 0
     
     // MARK: - Previous Usage (for threshold detection)
     
@@ -34,6 +35,17 @@ final class UsageService {
         set {
             UserDefaults.standard.set(newValue, forKey: "refreshInterval")
             restartPolling()
+        }
+    }
+    
+    var appLanguage: AppLanguage {
+        get {
+            let raw = UserDefaults.standard.string(forKey: "appLanguage") ?? "system"
+            return AppLanguage(rawValue: raw) ?? .system
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: "appLanguage")
+            languageRefreshID += 1
         }
     }
     
@@ -88,12 +100,12 @@ final class UsageService {
         defer { isLoading = false }
         
         guard let credentials = readKeychain() else {
-            error = "Not logged in"
+            error = L("error.not_logged_in")
             return
         }
         
         guard let token = credentials.claudeAiOauth?.accessToken else {
-            error = "No access token"
+            error = L("error.no_access_token")
             return
         }
         
@@ -123,7 +135,7 @@ final class UsageService {
     
     private func fetchUsage(token: String) async -> APIResult {
         guard let url = URL(string: usageURL) else {
-            return .error("Invalid URL")
+            return .error(L("error.invalid_url"))
         }
         
         var request = URLRequest(url: url)
@@ -140,7 +152,7 @@ final class UsageService {
             switch status {
             case 200: return .success(data)
             case 401: return .unauthorized
-            default: return .error("HTTP \(status)")
+            default: return .error(L("error.http", status))
             }
         } catch {
             return .error(error.localizedDescription)
@@ -155,7 +167,7 @@ final class UsageService {
             error = nil
             lastUpdate = Date()
         } catch {
-            self.error = "Parse error"
+            self.error = L("error.parse")
         }
     }
     
@@ -163,12 +175,12 @@ final class UsageService {
     
     private func handleTokenRefresh(credentials: KeychainCredentials) async {
         guard let refreshToken = credentials.claudeAiOauth?.refreshToken else {
-            error = "No refresh token"
+            error = L("error.no_refresh_token")
             return
         }
         
         guard let newToken = await refreshAccessToken(refreshToken, credentials: credentials) else {
-            error = "Token refresh failed"
+            error = L("error.token_refresh_failed")
             return
         }
         
@@ -176,7 +188,7 @@ final class UsageService {
         if case .success(let data) = await fetchUsage(token: newToken) {
             parseUsage(data)
         } else {
-            error = "Request failed"
+            error = L("error.request_failed")
         }
     }
     
@@ -299,27 +311,26 @@ final class UsageService {
     func sendTestNotification() {
         let resetTime = formatResetTime(hours: 2, minutes: 34)
         
-        // Send all notification types with delays
-        sendNotification(title: "50% Usage Warning", body: "You've used 50% of your current session limit.")
+        sendNotification(title: L("notification.50_title"), body: L("notification.test_50_body"))
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [self] in
-            sendNotification(title: "75% Usage Warning", body: "You've used 75% of your current session limit.")
+            sendNotification(title: L("notification.75_title"), body: L("notification.test_75_body"))
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [self] in
-            sendNotification(title: "Limit Reached", body: "You've reached your current session limit. Resets in \(resetTime).")
+            sendNotification(title: L("notification.limit_title"), body: L("notification.test_limit_body", resetTime))
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) { [self] in
-            sendNotification(title: "Limit Reset", body: "Your current session limit has been reset. You can continue using Claude.")
+            sendNotification(title: L("notification.reset_title"), body: L("notification.test_reset_body"))
         }
     }
     
     private func formatResetTime(hours: Int, minutes: Int) -> String {
         if hours > 0 {
-            return "\(hours) hr \(minutes) min"
+            return L("time.hours_minutes", hours, minutes)
         }
-        return "\(minutes) min"
+        return L("time.minutes", minutes)
     }
     
     private func getResetTimeFromBucket(_ bucket: UsageBucket?) -> String? {
@@ -335,36 +346,34 @@ final class UsageService {
     private func checkThresholds(oldValue: Int?, newValue: Int, limitName: String, resetTime: String?) {
         guard let old = oldValue else { return }
         
-        // Check 50% threshold
         if notifyAt50 && old < 50 && newValue >= 50 {
             sendNotification(
-                title: "50% Usage Warning",
-                body: "You've used 50% of your \(limitName.lowercased())."
+                title: L("notification.50_title"),
+                body: L("notification.50_body", limitName)
             )
         }
         
-        // Check 75% threshold
         if notifyAt75 && old < 75 && newValue >= 75 {
             sendNotification(
-                title: "75% Usage Warning",
-                body: "You've used 75% of your \(limitName.lowercased())."
+                title: L("notification.75_title"),
+                body: L("notification.75_body", limitName)
             )
         }
         
-        // Check 100% threshold with reset time
         if notifyAt100 && old < 100 && newValue >= 100 {
-            var body = "You've reached your \(limitName.lowercased())."
+            let body: String
             if let time = resetTime {
-                body += " Resets in \(time)."
+                body = L("notification.limit_body_resets", limitName, time)
+            } else {
+                body = L("notification.limit_body", limitName)
             }
-            sendNotification(title: "Limit Reached", body: body)
+            sendNotification(title: L("notification.limit_title"), body: body)
         }
         
-        // Check for reset
         if notifyOnReset && old > 0 && newValue == 0 {
             sendNotification(
-                title: "Limit Reset",
-                body: "Your \(limitName.lowercased()) has been reset. You can continue using Claude."
+                title: L("notification.reset_title"),
+                body: L("notification.reset_body", limitName)
             )
         }
     }
@@ -386,24 +395,24 @@ final class UsageService {
     private func checkAllThresholds(_ newUsage: UsageResponse) {
         if let bucket = newUsage.fiveHour {
             let resetTime = getResetTimeFromBucket(bucket)
-            checkThresholds(oldValue: previousFiveHour, newValue: bucket.percent, limitName: "Current Session", resetTime: resetTime)
+            checkThresholds(oldValue: previousFiveHour, newValue: bucket.percent, limitName: L("limit.current_session"), resetTime: resetTime)
             previousFiveHour = bucket.percent
         }
         
         if let bucket = newUsage.sevenDay {
             let resetTime = getResetTimeFromBucket(bucket)
-            checkThresholds(oldValue: previousSevenDay, newValue: bucket.percent, limitName: "Weekly Limit", resetTime: resetTime)
+            checkThresholds(oldValue: previousSevenDay, newValue: bucket.percent, limitName: L("limit.weekly"), resetTime: resetTime)
             previousSevenDay = bucket.percent
         }
         
         if let bucket = newUsage.sevenDaySonnet {
             let resetTime = getResetTimeFromBucket(bucket)
-            checkThresholds(oldValue: previousSevenDaySonnet, newValue: bucket.percent, limitName: "Sonnet Weekly", resetTime: resetTime)
+            checkThresholds(oldValue: previousSevenDaySonnet, newValue: bucket.percent, limitName: L("limit.sonnet_weekly"), resetTime: resetTime)
             previousSevenDaySonnet = bucket.percent
         }
         
         if let extra = newUsage.extraUsage, extra.isEnabled {
-            checkThresholds(oldValue: previousExtraUsage, newValue: extra.percent, limitName: "Extra Usage", resetTime: nil)
+            checkThresholds(oldValue: previousExtraUsage, newValue: extra.percent, limitName: L("limit.extra_usage"), resetTime: nil)
             previousExtraUsage = extra.percent
         }
     }

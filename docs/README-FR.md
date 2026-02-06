@@ -37,6 +37,8 @@
 - **Surveillance en Temps Réel** - Visualisez les limites de session et hebdomadaires d'un coup d'œil
 - **Badge de Plan** - Affiche votre abonnement actuel (Pro, Max, Team)
 - **Support d'Utilisation Extra** - Suivez les crédits à la demande lorsqu'ils sont activés
+- **Barres de progression colorées** - Vert, jaune, orange, rouge selon le pourcentage d'utilisation
+- **Support multilingue** - Anglais, turc, chinois, espagnol, russe avec sélecteur de langue intégré
 - **Notifications Personnalisables** - Recevez des notifications à 50%, 75%, 100% ou lors de la réinitialisation
 - **Rafraîchissement Automatique** - Intervalle de rafraîchissement configurable (30s, 1m, 2m, 5m)
 - **Lancement au Démarrage** - Démarrez optionnellement avec votre Mac
@@ -112,6 +114,7 @@ Cliquez sur l'icône ⚙️ pour configurer :
 |-----------|-------------|
 | Lancer au démarrage | Démarrer automatiquement lors de la connexion |
 | Afficher % dans la barre de menu | Afficher le pourcentage à côté de l'icône |
+| Langue | Choisir la langue de l'app (Système, English, Türkçe, 中文, Español, Русский) |
 | Intervalle de rafraîchissement | Fréquence de récupération des données (30s - 5m) |
 | Notifier à 50% | Envoyer une notification à 50% d'utilisation |
 | Notifier à 75% | Envoyer une notification à 75% d'utilisation |

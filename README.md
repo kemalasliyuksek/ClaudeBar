@@ -35,6 +35,8 @@
 - **Real-time Usage Monitoring** - View current session and weekly usage limits at a glance
 - **Plan Badge** - Displays your current subscription (Pro, Max, Team)
 - **Extra Usage Support** - Track pay-as-you-go credits when enabled
+- **Color-coded Progress Bars** - Green, yellow, orange, red based on usage percentage
+- **Multi-language Support** - English, Turkish, Chinese, Spanish, Russian with in-app language picker
 - **Customizable Notifications** - Get notified at 50%, 75%, 100%, or on reset
 - **Auto-refresh** - Configurable refresh interval (30s, 1m, 2m, 5m)
 - **Launch at Login** - Optionally start with your Mac
@@ -110,6 +112,7 @@ Click the ⚙️ icon to configure:
 |---------|-------------|
 | Launch at login | Start automatically when you log in |
 | Show % in menu bar | Display percentage next to the menu bar icon |
+| Language | Choose app language (System, English, Turkce, 中文, Espanol, Русский) |
 | Refresh interval | How often to fetch usage data (30s - 5m) |
 | Notify when 50% used | Send notification at 50% usage |
 | Notify when 75% used | Send notification at 75% usage |
@@ -195,21 +198,28 @@ claude logout && claude login
 
 ```
 claudebar/
-├── Package.swift           # Swift Package Manager manifest
-├── build.sh                # Build script
-├── LICENSE                 # MIT License
-├── README.md               # This file
+├── Package.swift              # Swift Package Manager manifest
+├── build.sh                   # Build script
+├── LICENSE                    # MIT License
+├── README.md                  # This file
 ├── assets/
-│   └── icons/              # App icons
-├── docs/                   # Translated READMEs
+│   └── icons/                 # App icons
+├── docs/                      # Translated READMEs
 ├── Resources/
-│   ├── AppIcon.icns        # macOS app icon
-│   └── Info.plist          # App metadata
+│   ├── AppIcon.icns           # macOS app icon
+│   └── Info.plist             # App metadata
 └── Sources/ClaudeBar/
-    ├── ClaudeBarApp.swift  # App entry point
-    ├── UsageModels.swift   # Data models
-    ├── UsageService.swift  # API client & business logic
-    └── UsageView.swift     # SwiftUI views
+    ├── ClaudeBarApp.swift     # App entry point
+    ├── Localization.swift     # L() helper, language override, AppLanguage enum
+    ├── UsageModels.swift      # Data models
+    ├── UsageService.swift     # API client & business logic
+    ├── UsageView.swift        # SwiftUI views
+    └── Resources/
+        ├── en.lproj/          # English strings
+        ├── tr.lproj/          # Turkish strings
+        ├── zh-Hans.lproj/     # Simplified Chinese strings
+        ├── es.lproj/          # Spanish strings
+        └── ru.lproj/          # Russian strings
 ```
 
 ## Contributing

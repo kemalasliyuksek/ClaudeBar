@@ -35,6 +35,8 @@
 - **Gerçek Zamanlı Kullanım İzleme** - Mevcut oturum ve haftalık kullanım limitlerini bir bakışta görün
 - **Plan Rozeti** - Mevcut aboneliğinizi gösterir (Pro, Max, Team)
 - **Ekstra Kullanım Desteği** - Etkinleştirildiğinde kullandıkça öde kredilerini takip edin
+- **Renk Kodlu İlerleme Çubukları** - Kullanım yüzdesine göre yeşil, sarı, turuncu, kırmızı
+- **Çoklu Dil Desteği** - İngilizce, Türkçe, Çince, İspanyolca, Rusça ve uygulama içi dil seçimi
 - **Özelleştirilebilir Bildirimler** - %50, %75, %100 veya sıfırlandığında bildirim alın
 - **Otomatik Yenileme** - Yapılandırılabilir yenileme aralığı (30sn, 1dk, 2dk, 5dk)
 - **Giriş Sırasında Başlat** - İsteğe bağlı olarak Mac'inizle birlikte başlatın
@@ -110,6 +112,7 @@ Yapılandırmak için ⚙️ simgesine tıklayın:
 |------|----------|
 | Girişte başlat | Oturum açtığınızda otomatik olarak başla |
 | Menü çubuğunda % göster | Menü çubuğu simgesinin yanında yüzdeyi göster |
+| Dil | Uygulama dilini seçin (Sistem, English, Türkçe, 中文, Español, Русский) |
 | Yenileme aralığı | Kullanım verilerinin ne sıklıkla çekileceği (30sn - 5dk) |
 | %50'de bildir | %50 kullanımda bildirim gönder |
 | %75'te bildir | %75 kullanımda bildirim gönder |

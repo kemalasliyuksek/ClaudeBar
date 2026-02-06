@@ -1,0 +1,89 @@
+/* ClaudeBar - English */
+
+/* Section Headers */
+"section.plan_usage" = "Claude plan usage limits";
+"section.weekly" = "Weekly limits";
+"section.extra_usage" = "Extra usage";
+
+/* Usage Rows */
+"usage.current_session" = "Current session";
+"usage.all_models" = "All models";
+"usage.sonnet_only" = "Sonnet only";
+"usage.opus_only" = "Opus only";
+"usage.sonnet_not_used" = "You haven't used Sonnet yet";
+"usage.percent_used" = "%d%% used";
+"usage.spent" = "%@ spent";
+"usage.resets_limit" = "Resets %@ · Limit: %@";
+"usage.unlimited" = "unlimited";
+"usage.next_month" = "next month";
+
+/* Reset Time */
+"reset.in_hours_minutes" = "Resets in %d hr %d min";
+"reset.in_minutes" = "Resets in %d min";
+"reset.at" = "Resets %@";
+
+/* Time Duration */
+"time.hours_minutes" = "%d hr %d min";
+"time.minutes" = "%d min";
+
+/* Plan Badge */
+"plan.badge" = "%@ Plan";
+
+/* Settings */
+"settings.title" = "Settings";
+"settings.language" = "Language";
+"settings.language.system" = "System";
+"settings.launch_at_login" = "Launch at login";
+"settings.show_percentage" = "Show % in menu bar";
+"settings.refresh_interval" = "Refresh interval";
+"settings.notifications" = "Notifications";
+"settings.test" = "Test";
+"settings.notify_50" = "Notify when 50% used";
+"settings.notify_75" = "Notify when 75% used";
+"settings.notify_limit" = "Notify when limit reached";
+"settings.notify_reset" = "Notify when limit resets";
+
+/* About */
+"about.title" = "About";
+"about.description" = "A lightweight menu bar app for monitoring Claude usage limits.";
+"about.created_by" = "Created by";
+"about.github" = "GitHub";
+"about.report_issue" = "Report Issue";
+
+/* Footer */
+"footer.last_updated" = "Last updated: %@";
+"footer.less_than_minute" = "less than a minute ago";
+"footer.minutes_ago" = "%d minute(s) ago";
+"footer.hours_ago" = "%d hour(s) ago";
+
+/* Loading & Errors */
+"loading" = "Loading...";
+"error.not_logged_in" = "Not logged in";
+"error.no_access_token" = "No access token";
+"error.invalid_url" = "Invalid URL";
+"error.http" = "HTTP %d";
+"error.parse" = "Parse error";
+"error.no_refresh_token" = "No refresh token";
+"error.token_refresh_failed" = "Token refresh failed";
+"error.request_failed" = "Request failed";
+
+/* Notifications */
+"notification.50_title" = "50%% Usage Warning";
+"notification.50_body" = "You've used 50%% of your %@.";
+"notification.75_title" = "75%% Usage Warning";
+"notification.75_body" = "You've used 75%% of your %@.";
+"notification.limit_title" = "Limit Reached";
+"notification.limit_body" = "You've reached your %@.";
+"notification.limit_body_resets" = "You've reached your %@. Resets in %@.";
+"notification.reset_title" = "Limit Reset";
+"notification.reset_body" = "Your %@ has been reset. You can continue using Claude.";
+"notification.test_50_body" = "You've used 50%% of your current session limit.";
+"notification.test_75_body" = "You've used 75%% of your current session limit.";
+"notification.test_limit_body" = "You've reached your current session limit. Resets in %@.";
+"notification.test_reset_body" = "Your current session limit has been reset. You can continue using Claude.";
+
+/* Limit Names */
+"limit.current_session" = "current session";
+"limit.weekly" = "weekly limit";
+"limit.sonnet_weekly" = "Sonnet weekly";
+"limit.extra_usage" = "extra usage";
