@@ -1,89 +1,122 @@
 # Usagem
 
-A native macOS menu bar app that displays your Claude Code usage limits in real-time.
+<p align="center">
+  <img src="assets/usagem-icon.png" alt="Usagem Icon" width="128" height="128">
+</p>
 
-![macOS](https://img.shields.io/badge/macOS-14.0+-blue)
-![Swift](https://img.shields.io/badge/Swift-5.9+-orange)
-![License](https://img.shields.io/badge/License-MIT-green)
+<p align="center">
+  <strong>A native macOS menu bar app for monitoring Claude usage limits in real-time.</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/macOS-14.0+-blue" alt="macOS">
+  <img src="https://img.shields.io/badge/Swift-5.9+-orange" alt="Swift">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+</p>
+
+---
 
 ## Features
 
-- **Real-time Usage Monitoring** - See your current session and weekly usage limits at a glance
-- **Auto-refresh** - Updates every 60 seconds automatically
-- **Token Management** - Handles OAuth token refresh seamlessly
+- **Real-time Usage Monitoring** - View current session and weekly usage limits at a glance
+- **Plan Badge** - Displays your current subscription (Pro, Max, Team)
+- **Extra Usage Support** - Track pay-as-you-go credits when enabled
+- **Customizable Notifications** - Get notified at 50%, 75%, 100%, or on reset
+- **Auto-refresh** - Configurable refresh interval (30s, 1m, 2m, 5m)
+- **Launch at Login** - Optionally start with your Mac
+- **Menu Bar Percentage** - Show/hide usage percentage in menu bar
 - **Native Experience** - Built with SwiftUI, follows macOS design guidelines
 - **Lightweight** - Minimal resource footprint, no Electron
+- **Privacy Focused** - No analytics, no telemetry
 
-## Screenshots
+## Screenshot
 
-<!-- Add screenshots here -->
 ```
-┌─────────────────────────────────────┐
-│ Claude plan usage limits            │
-│                                     │
-│ Current session  ████████░░  72%    │
-│ Resets in 3 hr 56 min               │
-│─────────────────────────────────────│
-│ Weekly limits                       │
-│                                     │
-│ All models       ████░░░░░░  40%    │
-│ Resets Sat 9:59 AM                  │
-│                                     │
-│ Sonnet only      ░░░░░░░░░░   0%    │
-│ You haven't used Sonnet yet         │
-│─────────────────────────────────────│
-│ Last updated: less than a minute ago│
-└─────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│ Claude plan usage limits     [Max Plan] │
+│                                         │
+│ Current session  ██░░░░░░░░   11% used  │
+│ Resets in 3 hr 56 min                   │
+│─────────────────────────────────────────│
+│ Weekly limits                           │
+│                                         │
+│ All models       ████░░░░░░   41% used  │
+│ Resets Sat 10:00 AM                     │
+│                                         │
+│ Sonnet only      ░░░░░░░░░░    0% used  │
+│ You haven't used Sonnet yet             │
+│─────────────────────────────────────────│
+│ Extra usage                             │
+│                                         │
+│ $0.00 spent      ░░░░░░░░░░    0% used  │
+│ Resets Mar 1 · Limit: $50               │
+│─────────────────────────────────────────│
+│ Last updated: ...          ⓘ  ⚙️  ↻     │
+└─────────────────────────────────────────┘
 ```
 
 ## Requirements
 
 - macOS 14.0 (Sonoma) or later
 - [Claude Code](https://claude.ai/code) installed and logged in
-- Active Claude Pro/Team subscription
+- Active Claude Pro, Max, or Team subscription
 
 ## Installation
 
-### Option 1: Download Pre-built Binary
+### Download Pre-built Binary
 
-Download the latest release from the [Releases](https://github.com/kemalasliyuksek/usagem/releases) page.
+Download the latest `.app` from the [Releases](https://github.com/kemalasliyuksek/usagem/releases) page, then drag it to your Applications folder.
 
-### Option 2: Build from Source
+### Build from Source
 
 ```bash
-# Clone the repository
 git clone https://github.com/kemalasliyuksek/usagem.git
 cd usagem
-
-# Build the app
 ./build.sh
-
-# The app bundle is created at .build/release/Usagem.app
 ```
 
-To install system-wide:
+The app bundle will be created at `.build/release/Usagem.app`.
+
+To install:
 ```bash
 cp -r .build/release/Usagem.app /Applications/
 ```
 
 ## Usage
 
-1. Make sure you're logged into Claude Code (run `claude` in terminal)
-2. Launch Usagem
-3. Click the gauge icon in your menu bar to see your usage limits
+1. Ensure you're logged into Claude Code (`claude` command should work in terminal)
+2. Launch Usagem from Applications or Spotlight
+3. Click the gauge icon in your menu bar to view usage limits
+
+### Settings
+
+Click the ⚙️ icon to configure:
+
+| Setting | Description |
+|---------|-------------|
+| Launch at login | Start automatically when you log in |
+| Show % in menu bar | Display percentage next to the menu bar icon |
+| Refresh interval | How often to fetch usage data (30s - 5m) |
+| Notify when 50% used | Send notification at 50% usage |
+| Notify when 75% used | Send notification at 75% usage |
+| Notify when limit reached | Send notification when limit is reached |
+| Notify when limit resets | Send notification when limit resets |
+
+### About
+
+Click the ⓘ icon to view app information, credits, and links.
 
 ## How It Works
 
-Usagem leverages the OAuth credentials that Claude Code stores in your macOS Keychain. Here's the complete flow:
+Usagem reads OAuth credentials from the macOS Keychain that Claude Code stores when you log in. It then queries the Anthropic API for your current usage limits.
 
-### Architecture Overview
+### Architecture
 
 ```
 ┌─────────────────┐                      ┌───────────────────────────┐
 │                 │  Stores tokens       │                           │
 │   Claude Code   │─────────────────────▶│     macOS Keychain        │
 │   (CLI login)   │                      │ "Claude Code-credentials" │
-│                 │                      │                           │
 └─────────────────┘                      └───────────────────────────┘
                                                      │
                                                      │ Reads tokens
@@ -91,192 +124,78 @@ Usagem leverages the OAuth credentials that Claude Code stores in your macOS Key
 ┌─────────────────┐                      ┌───────────────────────────┐
 │                 │ GET /api/oauth/usage │                           │
 │  Anthropic API  │◀─────────────────────│          Usagem           │
-│                 │                      │        (this app)         │
 │                 │─────────────────────▶│                           │
-└─────────────────┘   Usage data (JSON)  └───────────────────────────┘
+└─────────────────┘    Usage data        └───────────────────────────┘
 ```
 
 ### Authentication Flow
 
-#### Step 1: Reading Credentials
+1. **Read Credentials** - Usagem reads tokens from macOS Keychain using:
+   ```bash
+   security find-generic-password -s "Claude Code-credentials" -w
+   ```
 
-Usagem reads Claude Code's OAuth tokens from the macOS Keychain using the `security` command:
+2. **Fetch Usage** - Calls the Anthropic usage API with the access token:
+   ```http
+   GET https://api.anthropic.com/api/oauth/usage
+   Authorization: Bearer {accessToken}
+   anthropic-beta: oauth-2025-04-20
+   ```
 
-```bash
-security find-generic-password -s "Claude Code-credentials" -w
-```
+3. **Token Refresh** - When the access token expires (HTTP 401), Usagem automatically refreshes it and updates the Keychain.
 
-This returns a JSON structure containing:
+### API Response
+
 ```json
 {
-  "claudeAiOauth": {
-    "accessToken": "eyJ...",
-    "refreshToken": "eyJ...",
-    "expiresAt": 1738700000000,
-    "scopes": ["user:inference", "user:profile", "user:sessions:claude_code"],
-    "subscriptionType": "pro",
-    "rateLimitTier": "pro"
-  }
+  "five_hour": { "utilization": 11.0, "resets_at": "2026-02-06T11:00:00Z" },
+  "seven_day": { "utilization": 42.0, "resets_at": "2026-02-07T07:00:00Z" },
+  "seven_day_sonnet": { "utilization": 0.0, "resets_at": null },
+  "extra_usage": { "is_enabled": true, "monthly_limit": 5000, "used_credits": 0.0 }
 }
-```
-
-#### Step 2: Fetching Usage Data
-
-With the access token, Usagem calls the Anthropic usage API:
-
-```http
-GET https://api.anthropic.com/api/oauth/usage
-Authorization: Bearer {accessToken}
-Content-Type: application/json
-anthropic-beta: oauth-2025-04-20
-```
-
-Response:
-```json
-{
-  "five_hour": {
-    "utilization": 72.0,
-    "resets_at": "2026-02-04T15:59:59.735935+00:00"
-  },
-  "seven_day": {
-    "utilization": 40.0,
-    "resets_at": "2026-02-07T06:59:59.735962+00:00"
-  },
-  "seven_day_sonnet": {
-    "utilization": 0.0,
-    "resets_at": null
-  }
-}
-```
-
-#### Step 3: Token Refresh (on 401)
-
-When the access token expires (HTTP 401), Usagem automatically refreshes it:
-
-```http
-POST https://platform.claude.com/v1/oauth/token
-Content-Type: application/json
-
-{
-  "grant_type": "refresh_token",
-  "refresh_token": "{refreshToken}",
-  "client_id": "9d1c250a-e61b-44d9-88ed-5944d1962f5e",
-  "scope": "user:inference user:profile user:sessions:claude_code"
-}
-```
-
-The new tokens are saved back to the Keychain, maintaining compatibility with Claude Code.
-
-### Sequence Diagram
-
-```
-┌──────┐          ┌────────┐          ┌─────────┐          ┌───────────┐
-│Usagem│          │Keychain│          │Anthropic│          │Claude.com │
-└──┬───┘          └───┬────┘          └────┬────┘          └─────┬─────┘
-   │                  │                    │                     │
-   │ read credentials │                    │                     │
-   │─────────────────▶│                    │                     │
-   │                  │                    │                     │
-   │    JSON tokens   │                    │                     │
-   │◀─────────────────│                    │                     │
-   │                  │                    │                     │
-   │                  │   GET /usage       │                     │
-   │                  │   + Bearer token   │                     │
-   │──────────────────┼───────────────────▶│                     │
-   │                  │                    │                     │
-   │                  │    200 OK / 401    │                     │
-   │◀─────────────────┼────────────────────│                     │
-   │                  │                    │                     │
-   │ [if 401]         │                    │                     │
-   │                  │                    │  POST /oauth/token  │
-   │──────────────────┼────────────────────┼────────────────────▶│
-   │                  │                    │                     │
-   │                  │                    │    new tokens       │
-   │◀─────────────────┼────────────────────┼─────────────────────│
-   │                  │                    │                     │
-   │ save new tokens  │                    │                     │
-   │─────────────────▶│                    │                     │
-   │                  │                    │                     │
 ```
 
 ## Important Notes
 
 ### Keychain Access
 
-On first launch, macOS may prompt you to allow Usagem to access the Keychain item "Claude Code-credentials". Click **Always Allow** for seamless operation.
+On first launch, macOS may prompt you to allow Usagem to access the Keychain. Click **Always Allow** for seamless operation.
 
-### Token Refresh Race Condition
+### Token Sharing
 
-Since Usagem shares credentials with Claude Code, there's a potential race condition:
+Usagem shares OAuth tokens with Claude Code. In rare cases, simultaneous token refresh may require re-login:
 
-```
-Time    Claude Code              Usagem
-────────────────────────────────────────────────────
-T1      Using token A            
-T2                               Gets 401, refreshes...
-T3                               Saves token B to Keychain
-T4      Gets 401 (token A invalid)
-T5      May fail to refresh if refresh token changed
-```
-
-**Mitigation:** This is rare in practice since:
-- Access tokens are valid for ~1 hour
-- Refresh tokens are typically reusable
-- Both apps don't refresh simultaneously often
-
-If you experience authentication issues, simply re-login to Claude Code:
 ```bash
 claude logout && claude login
 ```
 
-### Privacy & Security
+### Privacy
 
-- Usagem only reads existing credentials; it never sees your password
+- Only reads existing credentials from Keychain
 - All communication uses HTTPS
-- No data is stored outside the system Keychain
+- No data stored outside system Keychain
 - No analytics or telemetry
+- Fully open source
 
 ## Project Structure
 
 ```
 usagem/
-├── Package.swift              # Swift Package Manager manifest
-├── build.sh                   # Build script
+├── Package.swift           # Swift Package Manager manifest
+├── build.sh                # Build script
+├── LICENSE                 # MIT License
+├── README.md               # This file
+├── assets/
+│   └── usagem-icon.png     # App icon source
 ├── Resources/
-│   └── Info.plist             # App metadata
+│   ├── AppIcon.icns        # macOS app icon
+│   └── Info.plist          # App metadata
 └── Sources/Usagem/
-    ├── UsagemApp.swift        # App entry point, menu bar setup
-    ├── UsageModels.swift      # Data models (API response, Keychain)
-    ├── UsageService.swift     # API client, token management
-    └── UsageView.swift        # SwiftUI UI components
+    ├── UsagemApp.swift     # App entry point
+    ├── UsageModels.swift   # Data models
+    ├── UsageService.swift  # API client & business logic
+    └── UsageView.swift     # SwiftUI views
 ```
-
-### Key Components
-
-| File | Responsibility |
-|------|----------------|
-| `UsagemApp.swift` | Menu bar configuration, app lifecycle |
-| `UsageService.swift` | API calls, OAuth flow, Keychain I/O |
-| `UsageModels.swift` | Type definitions, JSON parsing |
-| `UsageView.swift` | UI layout, progress bars, formatting |
-
-## API Reference
-
-### Usage Response Model
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `five_hour` | `UsageBucket?` | Current session limit (resets every 5 hours) |
-| `seven_day` | `UsageBucket?` | Weekly limit for all models |
-| `seven_day_sonnet` | `UsageBucket?` | Weekly limit for Sonnet model |
-| `seven_day_opus` | `UsageBucket?` | Weekly limit for Opus model |
-
-### UsageBucket Model
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `utilization` | `Double` | Usage percentage (0.0 - 100.0) |
-| `resets_at` | `String?` | ISO 8601 timestamp for reset time |
 
 ## Contributing
 
@@ -284,11 +203,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### Development Setup
+### Development
 
 ```bash
 # Clone your fork
@@ -300,24 +219,18 @@ swift build
 
 # Run
 swift run
+
+# Build release
+./build.sh
 ```
-
-## Roadmap
-
-- [ ] App icon
-- [ ] Launch at login option
-- [ ] Notifications when approaching rate limits
-- [ ] Customizable refresh interval
-- [ ] Menubar percentage display toggle
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## Author
 
-- Built for the [Claude Code](https://claude.ai/code) community
-- Inspired by the usage display on [claude.ai](https://claude.ai)
+**Kemal Asliyuksek** - [@kemalasliyuksek](https://github.com/kemalasliyuksek)
 
 ## Disclaimer
 

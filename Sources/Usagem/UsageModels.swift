@@ -8,12 +8,63 @@ struct UsageResponse: Codable {
     let sevenDay: UsageBucket?
     let sevenDaySonnet: UsageBucket?
     let sevenDayOpus: UsageBucket?
+    let extraUsage: ExtraUsage?
 
     enum CodingKeys: String, CodingKey {
         case fiveHour = "five_hour"
         case sevenDay = "seven_day"
         case sevenDaySonnet = "seven_day_sonnet"
         case sevenDayOpus = "seven_day_opus"
+        case extraUsage = "extra_usage"
+    }
+}
+
+/// Extra usage credits (pay-as-you-go)
+struct ExtraUsage: Codable {
+    let isEnabled: Bool
+    let monthlyLimit: Int?
+    let usedCredits: Double?
+    let utilization: Double?
+    
+    enum CodingKeys: String, CodingKey {
+        case isEnabled = "is_enabled"
+        case monthlyLimit = "monthly_limit"
+        case usedCredits = "used_credits"
+        case utilization
+    }
+    
+    var usedAmount: String {
+        guard let used = usedCredits else { return "$0.00" }
+        return String(format: "$%.2f", used / 100)
+    }
+    
+    var limitAmount: String {
+        guard let limit = monthlyLimit else { return "unlimited" }
+        return String(format: "$%.0f", Double(limit) / 100)
+    }
+    
+    var percent: Int {
+        if let utilization = utilization {
+            return Int(utilization.rounded())
+        }
+        guard let used = usedCredits, let limit = monthlyLimit, limit > 0 else { return 0 }
+        return Int((used / Double(limit)) * 100)
+    }
+    
+    var resetDateText: String {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        var components = calendar.dateComponents([.year, .month], from: now)
+        components.month! += 1
+        components.day = 1
+        
+        guard let nextMonth = calendar.date(from: components) else { return "next month" }
+        
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.dateFormat = "MMM d"
+        return formatter.string(from: nextMonth)
     }
 }
 
@@ -56,10 +107,20 @@ struct UsageBucket: Codable {
             return "Resets in \(minutes) min"
 
         case .absolute:
+            // Round up to nearest hour if within last minute
+            let calendar = Calendar.current
+            let minute = calendar.component(.minute, from: target)
+            let roundedDate: Date
+            if minute >= 59 {
+                roundedDate = calendar.date(byAdding: .minute, value: 1, to: target) ?? target
+            } else {
+                roundedDate = target
+            }
+            
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "en_US")
             formatter.dateFormat = "EEE h:mm a"
-            return "Resets \(formatter.string(from: target))"
+            return "Resets \(formatter.string(from: roundedDate))"
         }
     }
 

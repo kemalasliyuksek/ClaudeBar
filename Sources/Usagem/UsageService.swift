@@ -15,6 +15,50 @@ final class UsageService {
     private(set) var isLoading = false
     private(set) var planType: String?
     
+    // MARK: - Previous Usage (for threshold detection)
+    
+    private var previousFiveHour: Int?
+    private var previousSevenDay: Int?
+    private var previousSevenDaySonnet: Int?
+    private var previousExtraUsage: Int?
+    
+    // MARK: - Settings (persisted)
+    
+    var showPercentage: Bool {
+        get { UserDefaults.standard.object(forKey: "showPercentage") as? Bool ?? true }
+        set { UserDefaults.standard.set(newValue, forKey: "showPercentage") }
+    }
+    
+    var refreshInterval: Int {
+        get { UserDefaults.standard.object(forKey: "refreshInterval") as? Int ?? 60 }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "refreshInterval")
+            restartPolling()
+        }
+    }
+    
+    // MARK: - Notification Settings (persisted)
+    
+    var notifyAt50: Bool {
+        get { UserDefaults.standard.object(forKey: "notifyAt50") as? Bool ?? true }
+        set { UserDefaults.standard.set(newValue, forKey: "notifyAt50") }
+    }
+    
+    var notifyAt75: Bool {
+        get { UserDefaults.standard.object(forKey: "notifyAt75") as? Bool ?? true }
+        set { UserDefaults.standard.set(newValue, forKey: "notifyAt75") }
+    }
+    
+    var notifyAt100: Bool {
+        get { UserDefaults.standard.object(forKey: "notifyAt100") as? Bool ?? true }
+        set { UserDefaults.standard.set(newValue, forKey: "notifyAt100") }
+    }
+    
+    var notifyOnReset: Bool {
+        get { UserDefaults.standard.object(forKey: "notifyOnReset") as? Bool ?? false }
+        set { UserDefaults.standard.set(newValue, forKey: "notifyOnReset") }
+    }
+    
     // MARK: - Configuration
     
     private let usageURL = "https://api.anthropic.com/api/oauth/usage"
@@ -105,7 +149,9 @@ final class UsageService {
     
     private func parseUsage(_ data: Data) {
         do {
-            usage = try JSONDecoder().decode(UsageResponse.self, from: data)
+            let newUsage = try JSONDecoder().decode(UsageResponse.self, from: data)
+            checkAllThresholds(newUsage)
+            usage = newUsage
             error = nil
             lastUpdate = Date()
         } catch {
@@ -238,8 +284,87 @@ final class UsageService {
     // MARK: - Polling
     
     private func startPolling() {
-        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(refreshInterval), repeats: true) { [weak self] _ in
             Task { await self?.refresh() }
+        }
+    }
+    
+    private func restartPolling() {
+        timer?.invalidate()
+        startPolling()
+    }
+    
+    // MARK: - Notifications
+    
+    func sendTestNotification() {
+        // Use AppleScript for reliable notifications in menu bar apps
+        let script = """
+            display notification "Notifications are working! You'll be notified when usage limits are reached." with title "Usagem" sound name "default"
+            """
+        
+        var error: NSDictionary?
+        if let appleScript = NSAppleScript(source: script) {
+            appleScript.executeAndReturnError(&error)
+        }
+    }
+    
+    private func checkThresholds(oldValue: Int?, newValue: Int, limitName: String) {
+        guard let old = oldValue else { return }
+        
+        let thresholds: [(Int, Bool, String)] = [
+            (50, notifyAt50, "50% used"),
+            (75, notifyAt75, "75% used"),
+            (100, notifyAt100, "limit reached")
+        ]
+        
+        for (threshold, enabled, message) in thresholds {
+            if enabled && old < threshold && newValue >= threshold {
+                sendNotification(
+                    title: "\(limitName)",
+                    body: "You've \(message) of your \(limitName.lowercased())."
+                )
+            }
+        }
+        
+        // Check for reset
+        if notifyOnReset && old > 0 && newValue == 0 {
+            sendNotification(
+                title: "\(limitName) Reset",
+                body: "Your \(limitName.lowercased()) has been reset."
+            )
+        }
+    }
+    
+    private func sendNotification(title: String, body: String) {
+        let script = """
+            display notification "\(body)" with title "\(title)" sound name "default"
+            """
+        
+        var error: NSDictionary?
+        if let appleScript = NSAppleScript(source: script) {
+            appleScript.executeAndReturnError(&error)
+        }
+    }
+    
+    private func checkAllThresholds(_ newUsage: UsageResponse) {
+        if let bucket = newUsage.fiveHour {
+            checkThresholds(oldValue: previousFiveHour, newValue: bucket.percent, limitName: "Current Session")
+            previousFiveHour = bucket.percent
+        }
+        
+        if let bucket = newUsage.sevenDay {
+            checkThresholds(oldValue: previousSevenDay, newValue: bucket.percent, limitName: "Weekly Limit")
+            previousSevenDay = bucket.percent
+        }
+        
+        if let bucket = newUsage.sevenDaySonnet {
+            checkThresholds(oldValue: previousSevenDaySonnet, newValue: bucket.percent, limitName: "Sonnet Weekly")
+            previousSevenDaySonnet = bucket.percent
+        }
+        
+        if let extra = newUsage.extraUsage, extra.isEnabled {
+            checkThresholds(oldValue: previousExtraUsage, newValue: extra.percent, limitName: "Extra Usage")
+            previousExtraUsage = extra.percent
         }
     }
 }
