@@ -28,8 +28,6 @@
   <a href="README-IT.md">Italiano</a>
 </p>
 
-> **Not:** Bu çeviri yapay zekâ tarafından oluşturulmuştur. Hatalar veya eksiklikler içerebilir. Düzeltmeler için pull request açabilirsiniz.
-
 ---
 
 ## Özellikler
@@ -39,7 +37,7 @@
 - **Ekstra Kullanım Desteği** - Etkinleştirildiğinde kullandıkça öde kredilerini takip edin
 - **Özelleştirilebilir Bildirimler** - %50, %75, %100 veya sıfırlandığında bildirim alın
 - **Otomatik Yenileme** - Yapılandırılabilir yenileme aralığı (30sn, 1dk, 2dk, 5dk)
-- **Giriş Sırasında Başlat** - İsteğe bağlı olarak Mac'inizle başlayın
+- **Giriş Sırasında Başlat** - İsteğe bağlı olarak Mac'inizle birlikte başlatın
 - **Menü Çubuğunda Yüzde** - Menü çubuğu simgesinin yanında yüzdeyi gösterin/gizleyin
 - **Yerel Deneyim** - SwiftUI ile oluşturulmuş, macOS tasarım ilkelerini takip eder
 - **Hafif** - Minimum kaynak kullanımı, Electron yok
@@ -119,18 +117,18 @@ Uygulama bilgileri, kreditler ve bağlantılar için ⓘ simgesine tıklayın.
 
 ## Nasıl Çalışır
 
-ClaudeBar, Claude Code'un giriş yaptığınızda sakladığı OAuth kimlik bilgilerini macOS Anahtarlık'tan okur. Ardından mevcut kullanım limitlerini almak için Anthropic API'sini sorgular.
+ClaudeBar, Claude Code'un giriş yaptığınızda sakladığı OAuth kimlik bilgilerini macOS Keychain'den okur. Ardından mevcut kullanım limitlerini almak için Anthropic API'sini sorgular.
 
 ### Mimari
 
 ```
 ┌─────────────────┐                      ┌───────────────────────────┐
-│                 │  Token'ları saklar   │                           │
-│   Claude Code   │─────────────────────▶│     macOS Anahtarlık      │
+│                 │  Tokenları saklar    │                           │
+│   Claude Code   │─────────────────────▶│     macOS Keychain        │
 │   (CLI giriş)   │                      │ "Claude Code-credentials" │
 └─────────────────┘                      └───────────────────────────┘
                                                      │
-                                                     │ Token'ları okur
+                                                     │ Tokenları okur
                                                      ▼
 ┌─────────────────┐                      ┌───────────────────────────┐
 │                 │ GET /api/oauth/usage │                           │
@@ -147,9 +145,9 @@ ClaudeBar, Claude Code'un giriş yaptığınızda sakladığı OAuth kimlik bilg
 
 ### Gizlilik
 
-- Yalnızca Anahtarlık'taki mevcut kimlik bilgilerini okur
+- Yalnızca Keychain'deki mevcut kimlik bilgilerini okur
 - Tüm iletişim HTTPS kullanır
-- Sistem Anahtarlık'ı dışında veri depolanmaz
+- Sistem Keychain'i dışında veri depolanmaz
 - Analitik veya telemetri yok
 - Tamamen açık kaynak
 
@@ -158,9 +156,9 @@ ClaudeBar, Claude Code'un giriş yaptığınızda sakladığı OAuth kimlik bilg
 Katkılarınız memnuniyetle karşılanır! Pull Request göndermekten çekinmeyin.
 
 1. Repoyu fork'layın
-2. Feature branch'inizi oluşturun (`git checkout -b feature/harika-özellik`)
+2. Feature branch'inizi oluşturun (`git checkout -b feature/harika-ozellik`)
 3. Değişikliklerinizi commit'leyin (`git commit -m 'Harika özellik ekle'`)
-4. Branch'e push yapın (`git push origin feature/harika-özellik`)
+4. Branch'e push yapın (`git push origin feature/harika-ozellik`)
 5. Pull Request açın
 
 ## Lisans
