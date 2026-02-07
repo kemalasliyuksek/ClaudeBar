@@ -26,7 +26,7 @@ fi
 
 RESOURCE_BUNDLE=".build/$TRIPLE/release/ClaudeBar_ClaudeBar.bundle"
 if [ -d "$RESOURCE_BUNDLE" ]; then
-    cp -r "$RESOURCE_BUNDLE" "$APP_BUNDLE/Contents/Resources/"
+    cp -r "$RESOURCE_BUNDLE" "$APP_BUNDLE/"
 fi
 
 echo ""
