@@ -6,6 +6,7 @@ struct UsageView: View {
     @Environment(UsageService.self) private var service
     @State private var showSettings = false
     @State private var showAbout = false
+    @State private var settingsTab = SettingsTab.general
 
     private func barColor(for percent: Int) -> Color {
         switch percent {
@@ -263,12 +264,33 @@ struct UsageView: View {
     }
     
     // MARK: - Settings Panel
-    
+
     private var settingsPanel: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(L("settings.title"))
                 .font(.system(size: 13, weight: .semibold))
-            
+
+            Picker("", selection: $settingsTab) {
+                Text(L("settings.tab_general")).tag(SettingsTab.general)
+                Text(L("settings.tab_menubar")).tag(SettingsTab.menuBar)
+                Text(L("settings.tab_notifications")).tag(SettingsTab.notifications)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .frame(maxWidth: .infinity)
+
+            switch settingsTab {
+            case .general:      generalSettingsContent
+            case .menuBar:      menuBarSettingsContent
+            case .notifications: notificationSettingsContent
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+    }
+
+    private var generalSettingsContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
             SettingsRow(title: L("settings.launch_at_login")) {
                 Toggle("", isOn: Binding(
                     get: { SMAppService.mainApp.status == .enabled },
@@ -279,16 +301,7 @@ struct UsageView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
             }
-            
-            SettingsRow(title: L("settings.show_percentage")) {
-                Toggle("", isOn: Binding(
-                    get: { service.showPercentage },
-                    set: { service.showPercentage = $0 }
-                ))
-                .toggleStyle(.switch)
-                .controlSize(.small)
-            }
-            
+
             SettingsRow(title: L("settings.language")) {
                 Picker("", selection: Binding(
                     get: { service.appLanguage },
@@ -301,7 +314,7 @@ struct UsageView: View {
                 .pickerStyle(.menu)
                 .frame(width: 100)
             }
-            
+
             SettingsRow(title: L("settings.refresh_interval")) {
                 Picker("", selection: Binding(
                     get: { service.refreshInterval },
@@ -315,10 +328,39 @@ struct UsageView: View {
                 .pickerStyle(.menu)
                 .frame(width: 70)
             }
-            
-            Divider()
-                .padding(.vertical, 2)
-            
+        }
+    }
+
+    private var menuBarSettingsContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            SettingsRow(title: L("settings.display_mode")) {
+                Picker("", selection: Binding(
+                    get: { service.menuBarSelection },
+                    set: { service.menuBarSelection = $0 }
+                )) {
+                    Text(L("menubar.display.none")).tag(MenuBarSelection.none)
+                    Text(L("menubar.display.hourly")).tag(MenuBarSelection.hourly)
+                    Text(L("menubar.display.weekly")).tag(MenuBarSelection.weekly)
+                }
+                .pickerStyle(.menu)
+                .frame(width: 95)
+            }
+
+            if service.menuBarSelection != .none {
+                SettingsRow(title: L("settings.show_reset_time")) {
+                    Toggle("", isOn: Binding(
+                        get: { service.showResetTime },
+                        set: { service.showResetTime = $0 }
+                    ))
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
+                }
+            }
+        }
+    }
+
+    private var notificationSettingsContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text(L("settings.notifications"))
                     .font(.system(size: 12, weight: .medium))
@@ -329,7 +371,7 @@ struct UsageView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.mini)
             }
-            
+
             SettingsRow(title: L("settings.notify_50")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyAt50 },
@@ -338,7 +380,7 @@ struct UsageView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
             }
-            
+
             SettingsRow(title: L("settings.notify_75")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyAt75 },
@@ -347,7 +389,7 @@ struct UsageView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
             }
-            
+
             SettingsRow(title: L("settings.notify_limit")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyAt100 },
@@ -356,7 +398,7 @@ struct UsageView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
             }
-            
+
             SettingsRow(title: L("settings.notify_reset")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyOnReset },
@@ -366,8 +408,6 @@ struct UsageView: View {
                 .controlSize(.small)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
     }
     
     // MARK: - Footer
@@ -465,6 +505,12 @@ struct UsageView: View {
             .foregroundStyle(.secondary)
             .padding(20)
     }
+}
+
+// MARK: - Settings Tab
+
+private enum SettingsTab {
+    case general, menuBar, notifications
 }
 
 // MARK: - Settings Row

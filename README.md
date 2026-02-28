@@ -40,7 +40,7 @@
 - **Customizable Notifications** - Get notified at 50%, 75%, 100%, or on reset
 - **Auto-refresh** - Configurable refresh interval (30s, 1m, 2m, 5m)
 - **Launch at Login** - Optionally start with your Mac
-- **Menu Bar Percentage** - Show/hide usage percentage in menu bar
+- **Customizable Menu Bar Display** - Show hourly session usage, weekly usage, or hide entirely, with optional reset countdown
 - **Native Experience** - Built with SwiftUI, follows macOS design guidelines
 - **Lightweight** - Minimal resource footprint, no Electron
 - **Privacy Focused** - No analytics, no telemetry
@@ -119,9 +119,10 @@ Click the ⚙️ icon to configure:
 | Setting | Description |
 |---------|-------------|
 | Launch at login | Start automatically when you log in |
-| Show % in menu bar | Display percentage next to the menu bar icon |
-| Language | Choose app language (System, English, Turkish, 中文, Espanol, Русский) |
-| Refresh interval | How often to fetch usage data (30s - 5m) |
+| Language | Choose app language (System, English, Turkish, 中文, Español, Русский) |
+| Refresh interval | How often to fetch usage data (30s – 5m) |
+| Display | What to show in the menu bar: None, Hourly session %, or Weekly % |
+| Show reset time | Show the reset countdown next to the percentage (e.g. `22% (2h 45m)`) |
 | Notify when 50% used | Send notification at 50% usage |
 | Notify when 75% used | Send notification at 75% usage |
 | Notify when limit reached | Send notification when limit is reached |

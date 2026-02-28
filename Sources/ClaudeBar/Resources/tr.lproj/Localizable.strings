@@ -23,6 +23,7 @@
 "reset.at" = "%@ tarihinde sıfırlanır";
 
 /* Time Duration */
+"time.days_hours" = "%dg %dsa";
 "time.hours_minutes" = "%d sa %d dk";
 "time.minutes" = "%d dk";
 
@@ -34,7 +35,14 @@
 "settings.language" = "Dil";
 "settings.language.system" = "Sistem";
 "settings.launch_at_login" = "Girişte başlat";
-"settings.show_percentage" = "Menü çubuğunda % göster";
+"settings.tab_general" = "Genel";
+"settings.tab_menubar" = "Menü Çubuğu";
+"settings.tab_notifications" = "Bildirimler";
+"settings.display_mode" = "Görünüm";
+"settings.show_reset_time" = "Sıfırlanma süresini göster";
+"menubar.display.none" = "Yok";
+"menubar.display.hourly" = "Saatlik";
+"menubar.display.weekly" = "Haftalık";
 "settings.refresh_interval" = "Yenileme aralığı";
 "settings.notifications" = "Bildirimler";
 "settings.test" = "Test";
