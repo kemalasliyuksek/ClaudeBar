@@ -26,8 +26,18 @@ final class UsageService {
     
     // MARK: - Settings (persisted)
     
-    var showPercentage: Bool {
-        didSet { UserDefaults.standard.set(showPercentage, forKey: "showPercentage") }
+    var menuBarSelection: MenuBarSelection {
+        didSet {
+            UserDefaults.standard.set(menuBarSelection.rawValue, forKey: "menuBarSelection")
+            NotificationCenter.default.post(name: .menuBarDisplayChanged, object: nil)
+        }
+    }
+
+    var showResetTime: Bool {
+        didSet {
+            UserDefaults.standard.set(showResetTime, forKey: "showResetTime")
+            NotificationCenter.default.post(name: .menuBarDisplayChanged, object: nil)
+        }
     }
     
     var refreshInterval: Int {
@@ -76,7 +86,8 @@ final class UsageService {
     
     init() {
         let defaults = UserDefaults.standard
-        showPercentage = defaults.object(forKey: "showPercentage") as? Bool ?? true
+        menuBarSelection = MenuBarSelection(rawValue: defaults.string(forKey: "menuBarSelection") ?? "") ?? .hourly
+        showResetTime = defaults.object(forKey: "showResetTime") as? Bool ?? false
         refreshInterval = defaults.object(forKey: "refreshInterval") as? Int ?? 60
         notifyAt50 = defaults.object(forKey: "notifyAt50") as? Bool ?? true
         notifyAt75 = defaults.object(forKey: "notifyAt75") as? Bool ?? true

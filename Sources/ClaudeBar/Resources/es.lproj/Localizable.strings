@@ -23,6 +23,7 @@
 "reset.at" = "Se restablece el %@";
 
 /* Time Duration */
+"time.days_hours" = "%dd %dh";
 "time.hours_minutes" = "%d h %d min";
 "time.minutes" = "%d min";
 
@@ -34,7 +35,14 @@
 "settings.language" = "Idioma";
 "settings.language.system" = "Sistema";
 "settings.launch_at_login" = "Iniciar al arrancar";
-"settings.show_percentage" = "Mostrar % en la barra de menú";
+"settings.tab_general" = "General";
+"settings.tab_menubar" = "Barra de menú";
+"settings.tab_notifications" = "Notificaciones";
+"settings.display_mode" = "Visualización";
+"settings.show_reset_time" = "Mostrar tiempo de restablecimiento";
+"menubar.display.none" = "Ninguno";
+"menubar.display.hourly" = "Por hora";
+"menubar.display.weekly" = "Semanal";
 "settings.refresh_interval" = "Intervalo de actualización";
 "settings.notifications" = "Notificaciones";
 "settings.test" = "Probar";

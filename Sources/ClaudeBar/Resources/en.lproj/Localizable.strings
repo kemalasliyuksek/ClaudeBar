@@ -23,6 +23,7 @@
 "reset.at" = "Resets %@";
 
 /* Time Duration */
+"time.days_hours" = "%dd %dh";
 "time.hours_minutes" = "%d hr %d min";
 "time.minutes" = "%d min";
 
@@ -34,7 +35,14 @@
 "settings.language" = "Language";
 "settings.language.system" = "System";
 "settings.launch_at_login" = "Launch at login";
-"settings.show_percentage" = "Show % in menu bar";
+"settings.tab_general" = "General";
+"settings.tab_menubar" = "Menu Bar";
+"settings.tab_notifications" = "Notifications";
+"settings.display_mode" = "Display";
+"settings.show_reset_time" = "Show reset time";
+"menubar.display.none" = "None";
+"menubar.display.hourly" = "Hourly";
+"menubar.display.weekly" = "Weekly";
 "settings.refresh_interval" = "Refresh interval";
 "settings.notifications" = "Notifications";
 "settings.test" = "Test";

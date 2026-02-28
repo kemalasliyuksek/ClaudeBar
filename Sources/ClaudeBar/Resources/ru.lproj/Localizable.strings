@@ -23,6 +23,7 @@
 "reset.at" = "Сброс %@";
 
 /* Time Duration */
+"time.days_hours" = "%dд %dч";
 "time.hours_minutes" = "%d ч %d мин";
 "time.minutes" = "%d мин";
 
@@ -34,7 +35,14 @@
 "settings.language" = "Язык";
 "settings.language.system" = "Система";
 "settings.launch_at_login" = "Запускать при входе";
-"settings.show_percentage" = "Показывать % в строке меню";
+"settings.tab_general" = "Основные";
+"settings.tab_menubar" = "Строка меню";
+"settings.tab_notifications" = "Уведомления";
+"settings.display_mode" = "Отображение";
+"settings.show_reset_time" = "Показывать время сброса";
+"menubar.display.none" = "Нет";
+"menubar.display.hourly" = "Почасовая";
+"menubar.display.weekly" = "Недельная";
 "settings.refresh_interval" = "Интервал обновления";
 "settings.notifications" = "Уведомления";
 "settings.test" = "Тест";

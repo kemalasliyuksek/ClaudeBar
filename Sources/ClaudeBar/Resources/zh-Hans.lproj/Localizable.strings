@@ -23,6 +23,7 @@
 "reset.at" = "%@ 重置";
 
 /* Time Duration */
+"time.days_hours" = "%d天%d时";
 "time.hours_minutes" = "%d 小时 %d 分钟";
 "time.minutes" = "%d 分钟";
 
@@ -34,7 +35,14 @@
 "settings.language" = "语言";
 "settings.language.system" = "系统";
 "settings.launch_at_login" = "登录时启动";
-"settings.show_percentage" = "在菜单栏显示 %";
+"settings.tab_general" = "通用";
+"settings.tab_menubar" = "菜单栏";
+"settings.tab_notifications" = "通知";
+"settings.display_mode" = "显示方式";
+"settings.show_reset_time" = "显示重置时间";
+"menubar.display.none" = "无";
+"menubar.display.hourly" = "按小时";
+"menubar.display.weekly" = "每周";
 "settings.refresh_interval" = "刷新间隔";
 "settings.notifications" = "通知";
 "settings.test" = "测试";

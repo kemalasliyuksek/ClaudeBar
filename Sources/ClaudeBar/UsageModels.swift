@@ -135,6 +135,14 @@ struct UsageBucket: Codable {
     }
 }
 
+// MARK: - Menu Bar Display
+
+enum MenuBarSelection: String, CaseIterable {
+    case none = "none"
+    case hourly = "hourly"
+    case weekly = "weekly"
+}
+
 // MARK: - Keychain
 
 /// Claude Code credentials from macOS Keychain
