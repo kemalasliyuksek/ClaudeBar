@@ -95,3 +95,18 @@
 "limit.weekly" = "Недельный лимит";
 "limit.sonnet_weekly" = "Sonnet недельный";
 "limit.extra_usage" = "Дополнительное использование";
+
+/* Кредиты и лимиты по моделям (v1.1) */
+"section.credits" = "Кредиты использования";
+"usage.one_time_credit" = "Разовый кредит";
+"usage.expires" = "Истекает %@";
+"usage.model_only" = "Только %@";
+"usage.extra_disabled.org_level_disabled_until" = "Отключено вашей организацией";
+"usage.extra_disabled.org_spend_cap_reached" = "Достигнут лимит расходов организации";
+"usage.extra_disabled.out_of_credits" = "Кредиты закончились";
+"usage.extra_disabled.generic" = "Дополнительное использование сейчас недоступно";
+"error.login_required" = "Сессия истекла. Выполните 'claude login' в Терминале.";
+"error.refresh_in_progress" = "Claude Code обновляет сессию, повтор позже";
+"settings.notifications_denied" = "Отключены в Системных настройках > Уведомления";
+"limit.opus_weekly" = "Opus недельный";
+"limit.model_weekly" = "%@ недельный";

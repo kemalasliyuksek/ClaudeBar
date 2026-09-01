@@ -1,42 +1,39 @@
 import Foundation
 
-/// Fetches Claude usage limits from Anthropic API.
+/// Kullanım verisini toplayan, ayarları tutan ve bildirimleri tetikleyen merkez.
 ///
-/// Handles OAuth token refresh automatically when tokens expire.
-/// Updates are fetched on init and every 60 seconds thereafter.
+/// Akış: kimlik bilgisini oku → süresi dolmak üzereyse token yenile → kullanım API'sini çağır →
+/// eşikleri kontrol edip bildirim gönder. Token yenileme Claude Code ile aynı kilit protokolünü
+/// izler (bkz. freshToken), böylece iki taraf aynı refresh token'ı çift kullanıp birbirini
+/// oturumdan düşürmez.
 @MainActor
 @Observable
 final class UsageService {
-    
+
     // MARK: - Public State
-    
+
     private(set) var usage: UsageResponse?
     private(set) var error: String?
     private(set) var lastUpdate: Date?
     private(set) var isLoading = false
     private(set) var planType: String?
     private(set) var languageRefreshID = 0
-    
-    // MARK: - Previous Usage (for threshold detection)
-    
-    private var previousFiveHour: Int?
-    private var previousSevenDay: Int?
-    private var previousSevenDaySonnet: Int?
-    private var previousExtraUsage: Int?
-    
+    /// Kullanıcı bildirim iznini reddettiyse true; ayarlar panelinde uyarı gösterilir
+    private(set) var notificationsDenied = false
+
     // MARK: - Settings (persisted)
-    
+
     var showPercentage: Bool {
         didSet { UserDefaults.standard.set(showPercentage, forKey: "showPercentage") }
     }
-    
+
     var refreshInterval: Int {
         didSet {
             UserDefaults.standard.set(refreshInterval, forKey: "refreshInterval")
             restartPolling()
         }
     }
-    
+
     var appLanguage: AppLanguage {
         didSet {
             UserDefaults.standard.set(appLanguage.rawValue, forKey: "appLanguage")
@@ -44,37 +41,43 @@ final class UsageService {
             languageRefreshID += 1
         }
     }
-    
+
     // MARK: - Notification Settings (persisted)
-    
+
     var notifyAt50: Bool {
         didSet { UserDefaults.standard.set(notifyAt50, forKey: "notifyAt50") }
     }
-    
+
     var notifyAt75: Bool {
         didSet { UserDefaults.standard.set(notifyAt75, forKey: "notifyAt75") }
     }
-    
+
     var notifyAt100: Bool {
         didSet { UserDefaults.standard.set(notifyAt100, forKey: "notifyAt100") }
     }
-    
+
     var notifyOnReset: Bool {
         didSet { UserDefaults.standard.set(notifyOnReset, forKey: "notifyOnReset") }
     }
-    
-    // MARK: - Configuration
-    
-    private let usageURL = "https://api.anthropic.com/api/oauth/usage"
-    private let tokenURL = "https://platform.claude.com/v1/oauth/token"
-    private let clientID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e"
-    private let keychainService = "Claude Code-credentials"
-    
+
+    // MARK: - Dependencies
+
+    private let store: CredentialStore
+    private let client: OAuthClient
+    private let notifier: Notifier
+    /// Kova anahtarı → son görülen durum; eşik geçişleri buradan hesaplanır
+    private var previous: [String: BucketSnapshot] = [:]
+    /// Sunucunun invalid_grant dediği refresh token; aynı token ile her yoklamada tekrar denemek anlamsız
+    private var deadRefreshToken: String?
     private var timer: Timer?
-    
+
     // MARK: - Lifecycle
-    
+
     init() {
+        store = CredentialStore()
+        client = OAuthClient()
+        notifier = Notifier()
+
         let defaults = UserDefaults.standard
         showPercentage = defaults.object(forKey: "showPercentage") as? Bool ?? true
         refreshInterval = defaults.object(forKey: "refreshInterval") as? Int ?? 60
@@ -84,340 +87,250 @@ final class UsageService {
         notifyOnReset = defaults.object(forKey: "notifyOnReset") as? Bool ?? false
         let langRaw = defaults.string(forKey: "appLanguage") ?? "system"
         appLanguage = AppLanguage(rawValue: langRaw) ?? .system
-        
+
+        Task { [weak self] in
+            guard let self else { return }
+            if let granted = await notifier.requestAuthorization() {
+                notificationsDenied = !granted
+            }
+        }
         Task { await refresh() }
         startPolling()
     }
-    
+
     deinit {
         MainActor.assumeIsolated {
             timer?.invalidate()
         }
     }
-    
+
     // MARK: - Public Methods
-    
-    /// Fetches latest usage data from API
+
+    /// En güncel kullanım verisini çeker
     func refresh() async {
         guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
-        
-        guard let credentials = readKeychain() else {
+
+        guard let snapshot = await readCredentials() else {
             error = L("error.not_logged_in")
             return
         }
-        
-        guard let token = credentials.claudeAiOauth?.accessToken else {
+        guard let oauth = snapshot.oauth else {
             error = L("error.no_access_token")
             return
         }
-        
-        planType = credentials.claudeAiOauth?.subscriptionType
-        
-        // Try request with current token
-        switch await fetchUsage(token: token) {
+
+        planType = PlanBadge.text(subscriptionType: oauth.subscriptionType, rateLimitTier: oauth.rateLimitTier)
+
+        // Süresi dolmak üzereyse boşa 401 yemek yerine önce yenile
+        var token = oauth.accessToken
+        if oauth.isExpiringSoon() {
+            guard let fresh = await freshToken(replacing: snapshot) else { return }
+            token = fresh
+        }
+
+        switch await client.fetchUsage(token: token) {
         case .success(let data):
-            parseUsage(data)
-            
+            parse(data)
+
         case .unauthorized:
-            // Token expired, try refresh
-            await handleTokenRefresh(credentials: credentials)
-            
-        case .error(let message):
+            // expiresAt güncel olmasa da sunucu reddettiyse yenile ve bir kez daha dene
+            guard let fresh = await freshToken(replacing: snapshot) else { return }
+            if case .success(let data) = await client.fetchUsage(token: fresh) {
+                parse(data)
+            } else {
+                error = L("error.request_failed")
+            }
+
+        case .failure(let message):
             error = message
         }
     }
-    
-    // MARK: - API Requests
-    
-    private enum APIResult {
-        case success(Data)
-        case unauthorized
-        case error(String)
-    }
-    
-    private func fetchUsage(token: String) async -> APIResult {
-        guard let url = URL(string: usageURL) else {
-            return .error(L("error.invalid_url"))
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
-        request.timeoutInterval = 10
-        
+
+    // MARK: - Parsing
+
+    private func parse(_ data: Data) {
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
-            
-            switch status {
-            case 200: return .success(data)
-            case 401: return .unauthorized
-            default: return .error(L("error.http", status))
-            }
-        } catch {
-            return .error(error.localizedDescription)
-        }
-    }
-    
-    private func parseUsage(_ data: Data) {
-        do {
-            let newUsage = try JSONDecoder().decode(UsageResponse.self, from: data)
-            checkAllThresholds(newUsage)
-            usage = newUsage
+            let decoded = try JSONDecoder().decode(UsageResponse.self, from: data)
+            notifyThresholds(for: decoded)
+            usage = decoded
             error = nil
             lastUpdate = Date()
         } catch {
             self.error = L("error.parse")
         }
     }
-    
+
     // MARK: - Token Refresh
-    
-    private func handleTokenRefresh(credentials: KeychainCredentials) async {
-        guard let refreshToken = credentials.claudeAiOauth?.refreshToken else {
+
+    /// Yarış güvenli token yenileme. Claude Code'un kendi akışıyla aynı adımlar:
+    /// 1. Yenileme kilidini al (~/.claude.lock). Alınamazsa Claude Code büyük olasılıkla şu an yeniliyor.
+    /// 2. Depoyu yeniden oku. Token bu arada değiştiyse başkası yenilemiştir, onu kullan ve çık.
+    /// 3. Değişmediyse refresh token ile yenile, sonucu ham JSON'a işleyip depoya yaz.
+    private func freshToken(replacing stale: CredentialStore.Snapshot) async -> String? {
+        let lock = DirectoryLock(path: store.refreshLockPath)
+        let locked = await lock.acquire(retries: 5, minDelay: 1.0, maxDelay: 2.0)
+        defer { if locked { lock.release() } }
+
+        guard let current = await readCredentials(), let oauth = current.oauth else {
+            error = L("error.not_logged_in")
+            return nil
+        }
+        if oauth.accessToken != stale.oauth?.accessToken, !oauth.isExpiringSoon() {
+            return oauth.accessToken
+        }
+        guard locked else {
+            error = L("error.refresh_in_progress")
+            return nil
+        }
+        guard let refreshToken = oauth.refreshToken else {
             error = L("error.no_refresh_token")
-            return
+            return nil
         }
-        
-        guard let newToken = await refreshAccessToken(refreshToken, credentials: credentials) else {
-            error = L("error.token_refresh_failed")
-            return
+        guard refreshToken != deadRefreshToken else {
+            error = L("error.login_required")
+            return nil
         }
-        
-        // Retry with new token
-        if case .success(let data) = await fetchUsage(token: newToken) {
-            parseUsage(data)
-        } else {
-            error = L("error.request_failed")
-        }
-    }
-    
-    private func refreshAccessToken(_ refreshToken: String, credentials: KeychainCredentials) async -> String? {
-        guard let url = URL(string: tokenURL) else { return nil }
-        
-        let body: [String: String] = [
-            "grant_type": "refresh_token",
-            "refresh_token": refreshToken,
-            "client_id": clientID,
-            "scope": "user:inference user:profile user:sessions:claude_code"
-        ]
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try? JSONEncoder().encode(body)
-        request.timeoutInterval = 10
-        
+
+        let stored = oauth.scopes ?? []
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            guard (response as? HTTPURLResponse)?.statusCode == 200 else { return nil }
-            
-            let tokenResponse = try JSONDecoder().decode(TokenRefreshResponse.self, from: data)
-            
-            // Save new tokens to keychain
-            saveTokens(
-                accessToken: tokenResponse.accessToken,
-                refreshToken: tokenResponse.refreshToken ?? refreshToken,
-                expiresIn: tokenResponse.expiresIn ?? 3600,
-                original: credentials
+            let response: TokenRefreshResponse
+            do {
+                let scopes = stored.isEmpty ? OAuthClient.defaultScopes : OAuthClient.mergedScopes(stored: stored)
+                response = try await client.refresh(refreshToken: refreshToken, scopes: scopes)
+            } catch OAuthClient.RefreshError.invalidScope where !stored.isEmpty {
+                // Birleştirilmiş küme reddedildiyse token'ın verildiği scope'larla yeniden dene
+                response = try await client.refresh(refreshToken: refreshToken, scopes: stored)
+            }
+
+            let expiresAt = Date().addingTimeInterval(TimeInterval(response.expiresIn ?? 3600))
+            let merged = try CredentialMerger.merge(
+                raw: current.raw,
+                accessToken: response.accessToken,
+                refreshToken: response.refreshToken ?? refreshToken,
+                expiresAt: expiresAt
             )
-            
-            return tokenResponse.accessToken
+            try await writeCredentials(merged, to: current.source)
+            return response.accessToken
+        } catch OAuthClient.RefreshError.invalidGrant {
+            deadRefreshToken = refreshToken
+            error = L("error.login_required")
+            return nil
         } catch {
+            self.error = L("error.token_refresh_failed")
             return nil
         }
     }
-    
-    // MARK: - Keychain
-    
-    private func readKeychain() -> KeychainCredentials? {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/security")
-        process.arguments = ["find-generic-password", "-s", keychainService, "-w"]
-        
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = Pipe()
-        
-        do {
-            try process.run()
-            process.waitUntilExit()
-            
-            guard process.terminationStatus == 0 else { return nil }
-            
-            let data = pipe.fileHandleForReading.readDataToEndOfFile()
-            guard let json = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
-                  !json.isEmpty else { return nil }
-            
-            return try JSONDecoder().decode(KeychainCredentials.self, from: Data(json.utf8))
-        } catch {
-            return nil
-        }
+
+    // MARK: - Credential I/O
+
+    /// `security` süreci ana iş parçacığını kilitlemesin diye okuma arka planda yapılır
+    private func readCredentials() async -> CredentialStore.Snapshot? {
+        let store = self.store
+        return await Task.detached(priority: .userInitiated) { store.read() }.value
     }
-    
-    private func saveTokens(accessToken: String, refreshToken: String, expiresIn: Int, original: KeychainCredentials) {
-        guard let oauth = original.claudeAiOauth else { return }
-        
-        let expiresAt = Date().timeIntervalSince1970 * 1000 + Double(expiresIn) * 1000
-        
-        let updated = KeychainCredentials(
-            claudeAiOauth: KeychainCredentials.OAuthCredentials(
-                accessToken: accessToken,
-                refreshToken: refreshToken,
-                expiresAt: expiresAt,
-                scopes: oauth.scopes,
-                subscriptionType: oauth.subscriptionType,
-                rateLimitTier: oauth.rateLimitTier
-            )
-        )
-        
-        guard let jsonData = try? JSONEncoder().encode(updated),
-              let jsonString = String(data: jsonData, encoding: .utf8) else { return }
-        
-        // Delete old entry
-        let delete = Process()
-        delete.executableURL = URL(fileURLWithPath: "/usr/bin/security")
-        delete.arguments = ["delete-generic-password", "-s", keychainService]
-        delete.standardOutput = Pipe()
-        delete.standardError = Pipe()
-        try? delete.run()
-        delete.waitUntilExit()
-        
-        // Add new entry
-        let add = Process()
-        add.executableURL = URL(fileURLWithPath: "/usr/bin/security")
-        add.arguments = ["add-generic-password", "-a", NSUserName(), "-s", keychainService, "-w", jsonString]
-        add.standardOutput = Pipe()
-        add.standardError = Pipe()
-        try? add.run()
-        add.waitUntilExit()
+
+    /// Yazma, Claude Code'un depo kilidi altında yapılır; kilit alınamazsa yazılmaz,
+    /// çünkü yarım kalmış bir Claude Code yazmasının üzerine binmek kaydı bozabilir.
+    private func writeCredentials(_ raw: Data, to source: CredentialStore.Source) async throws {
+        let lock = DirectoryLock(path: store.storageLockPath)
+        let locked = await lock.acquire(retries: 10, minDelay: 0.1, maxDelay: 1.0)
+        guard locked else { throw CredentialStore.StoreError.fileWriteFailed("storage lock busy") }
+        defer { lock.release() }
+
+        let store = self.store
+        try await Task.detached(priority: .userInitiated) { try store.write(raw, to: source) }.value
     }
-    
+
     // MARK: - Polling
-    
+
     private func startPolling() {
         timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(refreshInterval), repeats: true) { [weak self] _ in
             Task { await self?.refresh() }
         }
     }
-    
+
     private func restartPolling() {
         timer?.invalidate()
         startPolling()
     }
-    
+
     // MARK: - Notifications
-    
+
     func sendTestNotification() {
-        let resetTime = formatResetTime(hours: 2, minutes: 34)
-        
-        sendNotification(title: L("notification.50_title"), body: L("notification.test_50_body"))
-        
+        let resetTime = L("time.hours_minutes", 2, 34)
+
+        notifier.send(title: L("notification.50_title"), body: L("notification.test_50_body"))
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            self?.sendNotification(title: L("notification.75_title"), body: L("notification.test_75_body"))
+            self?.notifier.send(title: L("notification.75_title"), body: L("notification.test_75_body"))
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
-            self?.sendNotification(title: L("notification.limit_title"), body: L("notification.test_limit_body", resetTime))
+            self?.notifier.send(title: L("notification.limit_title"), body: L("notification.test_limit_body", resetTime))
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) { [weak self] in
-            self?.sendNotification(title: L("notification.reset_title"), body: L("notification.test_reset_body"))
+            self?.notifier.send(title: L("notification.reset_title"), body: L("notification.test_reset_body"))
         }
     }
-    
-    private func formatResetTime(hours: Int, minutes: Int) -> String {
-        if hours > 0 {
-            return L("time.hours_minutes", hours, minutes)
+
+    /// İzlenen her kova için önceki durumla karşılaştırıp bildirim üretir.
+    /// Kova anahtarı API alan adıdır; model bazlı kovalar model adıyla anahtarlanır.
+    private func notifyThresholds(for new: UsageResponse) {
+        let settings = ThresholdSettings(at50: notifyAt50, at75: notifyAt75, at100: notifyAt100, onReset: notifyOnReset)
+
+        var tracked: [(key: String, name: String, bucket: UsageBucket)] = []
+        if let bucket = new.fiveHour, bucket.hasData {
+            tracked.append(("five_hour", L("limit.current_session"), bucket))
         }
-        return L("time.minutes", minutes)
+        if let bucket = new.sevenDay, bucket.hasData {
+            tracked.append(("seven_day", L("limit.weekly"), bucket))
+        }
+        if let bucket = new.sevenDaySonnet, bucket.hasData {
+            tracked.append(("seven_day_sonnet", L("limit.sonnet_weekly"), bucket))
+        }
+        if let bucket = new.sevenDayOpus, bucket.hasData {
+            tracked.append(("seven_day_opus", L("limit.opus_weekly"), bucket))
+        }
+        for limit in new.modelLimits {
+            guard let name = limit.modelName else { continue }
+            tracked.append(("model:\(name.lowercased())", L("limit.model_weekly", name), limit.bucket))
+        }
+        if let extra = new.extraUsage, extra.isEnabled {
+            let bucket = UsageBucket(utilization: Double(extra.percent), resetsAt: nil)
+            tracked.append(("extra_usage", L("limit.extra_usage"), bucket))
+        }
+
+        var next: [String: BucketSnapshot] = [:]
+        for item in tracked {
+            let snapshot = BucketSnapshot(percent: item.bucket.percent, resetsAt: item.bucket.resetsAt)
+            let events = UsageThresholds.events(previous: previous[item.key], current: snapshot, settings: settings)
+            for event in events {
+                deliver(event, limitName: item.name, bucket: item.bucket)
+            }
+            next[item.key] = snapshot
+        }
+        previous = next
     }
-    
-    private func getResetTimeFromBucket(_ bucket: UsageBucket?) -> String? {
-        guard let bucket = bucket, let resetDate = bucket.resetDate else { return nil }
-        let seconds = resetDate.timeIntervalSince(Date())
-        guard seconds > 0 else { return nil }
-        
-        let hours = Int(seconds) / 3600
-        let minutes = (Int(seconds) % 3600) / 60
-        return formatResetTime(hours: hours, minutes: minutes)
-    }
-    
-    private func checkThresholds(oldValue: Int?, newValue: Int, limitName: String, resetTime: String?) {
-        guard let old = oldValue else { return }
-        
-        if notifyAt50 && old < 50 && newValue >= 50 {
-            sendNotification(
-                title: L("notification.50_title"),
-                body: L("notification.50_body", limitName)
-            )
-        }
-        
-        if notifyAt75 && old < 75 && newValue >= 75 {
-            sendNotification(
-                title: L("notification.75_title"),
-                body: L("notification.75_body", limitName)
-            )
-        }
-        
-        if notifyAt100 && old < 100 && newValue >= 100 {
+
+    private func deliver(_ event: UsageEvent, limitName: String, bucket: UsageBucket) {
+        switch event {
+        case .reached50:
+            notifier.send(title: L("notification.50_title"), body: L("notification.50_body", limitName))
+        case .reached75:
+            notifier.send(title: L("notification.75_title"), body: L("notification.75_body", limitName))
+        case .limitReached:
             let body: String
-            if let time = resetTime {
-                body = L("notification.limit_body_resets", limitName, time)
+            if let remaining = bucket.remainingText() {
+                body = L("notification.limit_body_resets", limitName, remaining)
             } else {
                 body = L("notification.limit_body", limitName)
             }
-            sendNotification(title: L("notification.limit_title"), body: body)
-        }
-        
-        if notifyOnReset && old > 0 && newValue == 0 {
-            sendNotification(
-                title: L("notification.reset_title"),
-                body: L("notification.reset_body", limitName)
-            )
-        }
-    }
-    
-    private func sendNotification(title: String, body: String) {
-        let escapedTitle = title.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
-        let escapedBody = body.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
-        
-        let script = """
-            display notification "\(escapedBody)" with title "\(escapedTitle)" sound name "default"
-            """
-        
-        var error: NSDictionary?
-        if let appleScript = NSAppleScript(source: script) {
-            appleScript.executeAndReturnError(&error)
-        }
-    }
-    
-    private func checkAllThresholds(_ newUsage: UsageResponse) {
-        if let bucket = newUsage.fiveHour {
-            let resetTime = getResetTimeFromBucket(bucket)
-            checkThresholds(oldValue: previousFiveHour, newValue: bucket.percent, limitName: L("limit.current_session"), resetTime: resetTime)
-            previousFiveHour = bucket.percent
-        }
-        
-        if let bucket = newUsage.sevenDay {
-            let resetTime = getResetTimeFromBucket(bucket)
-            checkThresholds(oldValue: previousSevenDay, newValue: bucket.percent, limitName: L("limit.weekly"), resetTime: resetTime)
-            previousSevenDay = bucket.percent
-        }
-        
-        if let bucket = newUsage.sevenDaySonnet {
-            let resetTime = getResetTimeFromBucket(bucket)
-            checkThresholds(oldValue: previousSevenDaySonnet, newValue: bucket.percent, limitName: L("limit.sonnet_weekly"), resetTime: resetTime)
-            previousSevenDaySonnet = bucket.percent
-        }
-        
-        if let extra = newUsage.extraUsage, extra.isEnabled {
-            checkThresholds(oldValue: previousExtraUsage, newValue: extra.percent, limitName: L("limit.extra_usage"), resetTime: nil)
-            previousExtraUsage = extra.percent
+            notifier.send(title: L("notification.limit_title"), body: body)
+        case .reset:
+            notifier.send(title: L("notification.reset_title"), body: L("notification.reset_body", limitName))
         }
     }
 }

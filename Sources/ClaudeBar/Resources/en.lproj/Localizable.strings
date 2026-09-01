@@ -95,3 +95,18 @@
 "limit.weekly" = "weekly limit";
 "limit.sonnet_weekly" = "Sonnet weekly";
 "limit.extra_usage" = "extra usage";
+
+/* Credits & Model Limits (v1.1) */
+"section.credits" = "Usage credits";
+"usage.one_time_credit" = "One-time credit";
+"usage.expires" = "Expires %@";
+"usage.model_only" = "%@ only";
+"usage.extra_disabled.org_level_disabled_until" = "Turned off by your organization";
+"usage.extra_disabled.org_spend_cap_reached" = "Organization spend cap reached";
+"usage.extra_disabled.out_of_credits" = "Out of credits";
+"usage.extra_disabled.generic" = "Extra usage is currently unavailable";
+"error.login_required" = "Session expired. Run 'claude login' in Terminal.";
+"error.refresh_in_progress" = "Claude Code is refreshing the session, will retry";
+"settings.notifications_denied" = "Turned off in System Settings > Notifications";
+"limit.opus_weekly" = "Opus weekly";
+"limit.model_weekly" = "%@ weekly";

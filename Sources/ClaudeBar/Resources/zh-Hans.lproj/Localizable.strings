@@ -95,3 +95,18 @@
 "limit.weekly" = "每周限额";
 "limit.sonnet_weekly" = "Sonnet 每周";
 "limit.extra_usage" = "额外用量";
+
+/* 额度与模型限额 (v1.1) */
+"section.credits" = "使用额度";
+"usage.one_time_credit" = "一次性额度";
+"usage.expires" = "%@ 到期";
+"usage.model_only" = "仅 %@";
+"usage.extra_disabled.org_level_disabled_until" = "已被您的组织关闭";
+"usage.extra_disabled.org_spend_cap_reached" = "已达到组织支出上限";
+"usage.extra_disabled.out_of_credits" = "额度已用完";
+"usage.extra_disabled.generic" = "额外用量当前不可用";
+"error.login_required" = "会话已过期。请在终端运行 'claude login'。";
+"error.refresh_in_progress" = "Claude Code 正在刷新会话，稍后重试";
+"settings.notifications_denied" = "已在系统设置 > 通知中关闭";
+"limit.opus_weekly" = "Opus 每周";
+"limit.model_weekly" = "%@ 每周";

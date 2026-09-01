@@ -95,3 +95,18 @@
 "limit.weekly" = "Haftalık limit";
 "limit.sonnet_weekly" = "Sonnet haftalık";
 "limit.extra_usage" = "Ekstra kullanım";
+
+/* Krediler ve Model Limitleri (v1.1) */
+"section.credits" = "Kullanım kredileri";
+"usage.one_time_credit" = "Tek seferlik kredi";
+"usage.expires" = "%@ tarihinde sona erer";
+"usage.model_only" = "Yalnızca %@";
+"usage.extra_disabled.org_level_disabled_until" = "Kuruluşunuz tarafından kapatıldı";
+"usage.extra_disabled.org_spend_cap_reached" = "Kuruluş harcama sınırına ulaşıldı";
+"usage.extra_disabled.out_of_credits" = "Kredi tükendi";
+"usage.extra_disabled.generic" = "Ekstra kullanım şu anda kullanılamıyor";
+"error.login_required" = "Oturum süresi doldu. Terminal'de 'claude login' çalıştırın.";
+"error.refresh_in_progress" = "Claude Code oturumu yeniliyor, tekrar denenecek";
+"settings.notifications_denied" = "Sistem Ayarları > Bildirimler'de kapalı";
+"limit.opus_weekly" = "Opus haftalık";
+"limit.model_weekly" = "%@ haftalık";

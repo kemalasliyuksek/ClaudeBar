@@ -1,11 +1,19 @@
 import SwiftUI
 import ServiceManagement
 
-/// Menu bar popover showing Claude usage limits
+/// Menü çubuğu penceresi: kullanım limitleri, ayarlar ve hakkında panelleri
 struct UsageView: View {
     @Environment(UsageService.self) private var service
     @State private var showSettings = false
     @State private var showAbout = false
+
+    /// Bir kullanım satırının görünüm verisi; hangi API alanından geldiği burada önemsizdir
+    private struct LimitRow: Identifiable {
+        let id: String
+        let title: String
+        let subtitle: String?
+        let bucket: UsageBucket
+    }
 
     private func barColor(for percent: Int) -> Color {
         switch percent {
@@ -20,7 +28,7 @@ struct UsageView: View {
         VStack(alignment: .leading, spacing: 0) {
             if let usage = service.usage {
                 sectionHeader(L("section.plan_usage"), showPlan: true)
-                if let bucket = usage.fiveHour {
+                if let bucket = usage.fiveHour, bucket.hasData {
                     usageRow(
                         title: L("usage.current_session"),
                         subtitle: bucket.resetText(style: .relative),
@@ -28,35 +36,26 @@ struct UsageView: View {
                     )
                 }
 
-                divider
+                let weekly = weeklyRows(for: usage)
+                if !weekly.isEmpty {
+                    divider
+                    sectionHeader(L("section.weekly"))
+                    ForEach(weekly) { row in
+                        usageRow(title: row.title, subtitle: row.subtitle, bucket: row.bucket)
+                    }
+                }
 
-                sectionHeader(L("section.weekly"))
-
-                if let bucket = usage.sevenDay {
+                if let credit = usage.oneTimeCredit, credit.hasData {
+                    divider
+                    sectionHeader(L("section.credits"))
                     usageRow(
-                        title: L("usage.all_models"),
-                        subtitle: bucket.resetText(style: .absolute),
-                        bucket: bucket
+                        title: L("usage.one_time_credit"),
+                        subtitle: credit.resetText(style: .expires),
+                        bucket: credit
                     )
                 }
 
-                if let bucket = usage.sevenDaySonnet {
-                    usageRow(
-                        title: L("usage.sonnet_only"),
-                        subtitle: bucket.percent == 0 ? L("usage.sonnet_not_used") : bucket.resetText(style: .absolute),
-                        bucket: bucket
-                    )
-                }
-
-                if let bucket = usage.sevenDayOpus, bucket.percent > 0 {
-                    usageRow(
-                        title: L("usage.opus_only"),
-                        subtitle: bucket.resetText(style: .absolute),
-                        bucket: bucket
-                    )
-                }
-                
-                if let extra = usage.extraUsage, extra.isEnabled {
+                if let extra = usage.extraUsage, extra.isVisible {
                     divider
                     sectionHeader(L("section.extra_usage"))
                     extraUsageRow(extra)
@@ -69,22 +68,69 @@ struct UsageView: View {
             }
 
             divider
-            
+
             if showSettings {
                 settingsPanel
                 divider
             }
-            
+
             if showAbout {
                 aboutPanel
                 divider
             }
-            
+
             footer
         }
         .frame(minWidth: 340, idealWidth: 340)
         .fixedSize(horizontal: true, vertical: false)
         .id(service.languageRefreshID)
+    }
+
+    // MARK: - Weekly Rows
+
+    /// Haftalık bölümün satırları. Sıra Claude Code'un /usage ekranıyla aynı:
+    /// tüm modeller, Sonnet, Opus (yalnızca kullanıldıysa), sonra limits[] içindeki model kovaları.
+    private func weeklyRows(for usage: UsageResponse) -> [LimitRow] {
+        var rows: [LimitRow] = []
+
+        if let bucket = usage.sevenDay, bucket.hasData {
+            rows.append(LimitRow(
+                id: "seven_day",
+                title: L("usage.all_models"),
+                subtitle: bucket.resetText(style: .absolute),
+                bucket: bucket
+            ))
+        }
+
+        if let bucket = usage.sevenDaySonnet, bucket.hasData {
+            rows.append(LimitRow(
+                id: "seven_day_sonnet",
+                title: L("usage.sonnet_only"),
+                subtitle: bucket.percent == 0 ? L("usage.sonnet_not_used") : bucket.resetText(style: .absolute),
+                bucket: bucket
+            ))
+        }
+
+        if let bucket = usage.sevenDayOpus, bucket.hasData, bucket.percent > 0 {
+            rows.append(LimitRow(
+                id: "seven_day_opus",
+                title: L("usage.opus_only"),
+                subtitle: bucket.resetText(style: .absolute),
+                bucket: bucket
+            ))
+        }
+
+        for limit in usage.modelLimits {
+            guard let name = limit.modelName else { continue }
+            rows.append(LimitRow(
+                id: "model:\(name.lowercased())",
+                title: L("usage.model_only", name),
+                subtitle: limit.bucket.resetText(style: .absolute),
+                bucket: limit.bucket
+            ))
+        }
+
+        return rows
     }
 
     // MARK: - Section Header
@@ -93,9 +139,9 @@ struct UsageView: View {
         HStack {
             Text(title)
                 .font(.system(size: 13, weight: .semibold))
-            
+
             Spacer()
-            
+
             if showPlan, let plan = service.planType {
                 planBadge(plan)
             }
@@ -104,11 +150,11 @@ struct UsageView: View {
         .padding(.top, 14)
         .padding(.bottom, 6)
     }
-    
+
     // MARK: - Plan Badge
-    
+
     private func planBadge(_ plan: String) -> some View {
-        Text(L("plan.badge", plan.capitalized))
+        Text(L("plan.badge", plan))
             .font(.system(size: 10, weight: .medium))
             .foregroundStyle(.white)
             .padding(.horizontal, 8)
@@ -145,30 +191,31 @@ struct UsageView: View {
     }
 
     // MARK: - Extra Usage Row
-    
+
     private func extraUsageRow(_ extra: ExtraUsage) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 12) {
                 Text(L("usage.spent", extra.usedAmount))
                     .font(.system(size: 13))
                     .frame(width: 100, alignment: .leading)
-                
+
                 progressBar(percent: extra.percent)
-                
+
                 Text(L("usage.percent_used", extra.percent))
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: true, vertical: false)
             }
-            
-            Text(L("usage.resets_limit", extra.resetDateText, extra.limitAmount))
+
+            // Kapatılmışsa gerekçe, açıksa sıfırlanma tarihi ve limit
+            Text(extra.disabledReasonText ?? L("usage.resets_limit", extra.resetDateText(), extra.limitAmount))
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
     }
-    
+
     // MARK: - Progress Bar
 
     private func progressBar(percent: Int) -> some View {
@@ -194,22 +241,28 @@ struct UsageView: View {
     }
 
     // MARK: - About Panel
-    
+
+    private var versionText: String {
+        // Paket dışında (swift run) Info.plist yoktur; "dev" göstermek yanlış sürüm göstermekten iyidir
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        return "v\(version ?? "dev")"
+    }
+
     private var aboutPanel: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(L("about.title"))
                 .font(.system(size: 13, weight: .semibold))
-            
+
             Text(L("about.description"))
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-            
+
             VStack(alignment: .leading, spacing: 6) {
                 Text(L("about.created_by"))
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
-                
+
                 if let url = URL(string: "https://github.com/kemalasliyuksek") {
                     Link(destination: url) {
                         HStack(spacing: 6) {
@@ -223,7 +276,7 @@ struct UsageView: View {
                     .foregroundStyle(.primary)
                 }
             }
-            
+
             HStack(spacing: 12) {
                 if let url = URL(string: "https://github.com/kemalasliyuksek/claudebar") {
                     Link(destination: url) {
@@ -237,7 +290,7 @@ struct UsageView: View {
                     .buttonStyle(.plain)
                     .foregroundStyle(.secondary)
                 }
-                
+
                 if let url = URL(string: "https://github.com/kemalasliyuksek/claudebar/issues") {
                     Link(destination: url) {
                         HStack(spacing: 4) {
@@ -250,10 +303,10 @@ struct UsageView: View {
                     .buttonStyle(.plain)
                     .foregroundStyle(.secondary)
                 }
-                
+
                 Spacer()
-                
-                Text("v\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0.0")")
+
+                Text(versionText)
                     .font(.system(size: 11))
                     .foregroundStyle(.tertiary)
             }
@@ -261,14 +314,14 @@ struct UsageView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
     }
-    
+
     // MARK: - Settings Panel
-    
+
     private var settingsPanel: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(L("settings.title"))
                 .font(.system(size: 13, weight: .semibold))
-            
+
             SettingsRow(title: L("settings.launch_at_login")) {
                 Toggle("", isOn: Binding(
                     get: { SMAppService.mainApp.status == .enabled },
@@ -279,7 +332,7 @@ struct UsageView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
             }
-            
+
             SettingsRow(title: L("settings.show_percentage")) {
                 Toggle("", isOn: Binding(
                     get: { service.showPercentage },
@@ -288,7 +341,7 @@ struct UsageView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
             }
-            
+
             SettingsRow(title: L("settings.language")) {
                 Picker("", selection: Binding(
                     get: { service.appLanguage },
@@ -301,7 +354,7 @@ struct UsageView: View {
                 .pickerStyle(.menu)
                 .frame(width: 100)
             }
-            
+
             SettingsRow(title: L("settings.refresh_interval")) {
                 Picker("", selection: Binding(
                     get: { service.refreshInterval },
@@ -315,10 +368,10 @@ struct UsageView: View {
                 .pickerStyle(.menu)
                 .frame(width: 70)
             }
-            
+
             Divider()
                 .padding(.vertical, 2)
-            
+
             HStack {
                 Text(L("settings.notifications"))
                     .font(.system(size: 12, weight: .medium))
@@ -329,7 +382,13 @@ struct UsageView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.mini)
             }
-            
+
+            if service.notificationsDenied {
+                Text(L("settings.notifications_denied"))
+                    .font(.system(size: 11))
+                    .foregroundStyle(.orange)
+            }
+
             SettingsRow(title: L("settings.notify_50")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyAt50 },
@@ -338,7 +397,7 @@ struct UsageView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
             }
-            
+
             SettingsRow(title: L("settings.notify_75")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyAt75 },
@@ -347,7 +406,7 @@ struct UsageView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
             }
-            
+
             SettingsRow(title: L("settings.notify_limit")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyAt100 },
@@ -356,7 +415,7 @@ struct UsageView: View {
                 .toggleStyle(.switch)
                 .controlSize(.small)
             }
-            
+
             SettingsRow(title: L("settings.notify_reset")) {
                 Toggle("", isOn: Binding(
                     get: { service.notifyOnReset },
@@ -369,7 +428,7 @@ struct UsageView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
     }
-    
+
     // MARK: - Footer
 
     private var footer: some View {
@@ -381,7 +440,7 @@ struct UsageView: View {
             }
 
             Spacer()
-            
+
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     showAbout.toggle()
@@ -394,7 +453,7 @@ struct UsageView: View {
             .buttonStyle(.borderless)
             .foregroundStyle(showAbout ? .primary : .secondary)
             .focusable(false)
-            
+
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     showSettings.toggle()
@@ -417,7 +476,7 @@ struct UsageView: View {
             .buttonStyle(.borderless)
             .foregroundStyle(.secondary)
             .focusable(false)
-            
+
             Button {
                 NSApplication.shared.terminate(nil)
             } label: {
@@ -472,7 +531,7 @@ struct UsageView: View {
 private struct SettingsRow<Content: View>: View {
     let title: String
     @ViewBuilder let content: () -> Content
-    
+
     var body: some View {
         HStack {
             Text(title)
