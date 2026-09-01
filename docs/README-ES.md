@@ -35,11 +35,13 @@
 ## Características
 
 - **Monitoreo de Uso en Tiempo Real** - Vea los límites de sesión actual y semanales de un vistazo
-- **Insignia de Plan** - Muestra su suscripción actual (Pro, Max, Team)
-- **Soporte de Uso Extra** - Rastrea créditos de pago por uso cuando está habilitado
+- **Insignia de Plan** - Muestra su suscripción actual (Pro, Max 5x, Max 20x, Team, Enterprise)
+- **Límites Semanales por Modelo** - Filas separadas para Fable, Opus y Sonnet cuando su plan las reporta
+- **Créditos de Uso** - Muestra los créditos únicos y cuándo vencen
+- **Soporte de Uso Extra** - Rastree el gasto de pago por uso y vea por qué está deshabilitado cuando su organización lo desactiva
 - **Barras de progreso con código de color** - Verde, amarillo, naranja, rojo según el porcentaje de uso
 - **Soporte multiidioma** - Inglés, turco, chino, español, ruso con selector de idioma en la app
-- **Notificaciones Personalizables** - Reciba notificaciones al 50%, 75%, 100% o al reiniciarse
+- **Notificaciones Personalizables** - Alertas nativas del Centro de Notificaciones al 50%, 75%, 100% o al reiniciarse, para cada límite monitoreado
 - **Actualización Automática** - Intervalo de actualización configurable (30s, 1m, 2m, 5m)
 - **Iniciar al Arrancar** - Opcionalmente inicie con su Mac
 - **Porcentaje en Barra de Menú** - Mostrar/ocultar porcentaje junto al ícono
@@ -135,7 +137,9 @@ Haga clic en el ícono ⓘ para ver información de la aplicación, créditos y 
 
 ## Cómo Funciona
 
-ClaudeBar lee las credenciales OAuth del Llavero de macOS que Claude Code almacena cuando inicia sesión. Luego consulta la API de Anthropic para obtener sus límites de uso actuales.
+ClaudeBar lee las credenciales OAuth del Llavero de macOS que Claude Code almacena cuando inicia sesión. Luego consulta el mismo endpoint de uso que utiliza el comando `/usage` de Claude Code.
+
+Cuando el token está por vencer, ClaudeBar lo renueva con el mismo protocolo que Claude Code: primero toma el bloqueo de renovación de Claude Code (`~/.claude.lock`), vuelve a leer el Llavero y usa el token nuevo si Claude Code ya lo renovó; de lo contrario lo renueva por su cuenta y lo actualiza en su lugar. La escritura se pasa a la herramienta `security` por stdin, así que el token nunca aparece en los argumentos del proceso. Si el Llavero no está disponible, se usa `~/.claude/.credentials.json` como respaldo.
 
 ### Arquitectura
 
@@ -159,11 +163,15 @@ ClaudeBar lee las credenciales OAuth del Llavero de macOS que Claude Code almace
 
 ### Acceso al Llavero
 
-En el primer inicio, macOS puede pedirle que permita a ClaudeBar acceder al Llavero. Haga clic en **Permitir Siempre** para un funcionamiento sin problemas.
+Las lecturas y escrituras pasan por la herramienta `security` del sistema, la misma ruta que usa Claude Code, así que normalmente no aparece ninguna solicitud adicional del Llavero. Si macOS la muestra, haga clic en **Permitir Siempre**.
+
+### Notificaciones
+
+En el primer inicio, macOS pregunta si ClaudeBar puede mostrar notificaciones. Si lo rechaza, puede activarlas más tarde en Ajustes del Sistema › Notificaciones › ClaudeBar.
 
 ### Privacidad
 
-- Solo lee credenciales existentes del Llavero
+- Solo lee las credenciales que Claude Code ya almacenó y escribe únicamente los tokens renovados
 - Toda la comunicación usa HTTPS
 - No se almacenan datos fuera del Llavero del sistema
 - Sin análisis ni telemetría

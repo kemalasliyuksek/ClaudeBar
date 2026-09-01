@@ -35,11 +35,13 @@
 ## Fonctionnalités
 
 - **Surveillance en Temps Réel** - Visualisez les limites de session et hebdomadaires d'un coup d'œil
-- **Badge de Plan** - Affiche votre abonnement actuel (Pro, Max, Team)
-- **Support d'Utilisation Extra** - Suivez les crédits à la demande lorsqu'ils sont activés
+- **Badge de Plan** - Affiche votre abonnement actuel (Pro, Max 5x, Max 20x, Team, Enterprise)
+- **Limites Hebdomadaires par Modèle** - Lignes séparées pour Fable, Opus et Sonnet dès que votre forfait les signale
+- **Crédits d'Utilisation** - Affiche les crédits ponctuels et leur date d'expiration
+- **Support d'Utilisation Extra** - Suivez les dépenses à la demande et voyez pourquoi elles sont désactivées lorsque votre organisation les coupe
 - **Barres de progression colorées** - Vert, jaune, orange, rouge selon le pourcentage d'utilisation
 - **Support multilingue** - Anglais, turc, chinois, espagnol, russe avec sélecteur de langue intégré
-- **Notifications Personnalisables** - Recevez des notifications à 50%, 75%, 100% ou lors de la réinitialisation
+- **Notifications Personnalisables** - Alertes natives du Centre de notifications à 50%, 75%, 100% ou lors de la réinitialisation, pour chaque limite suivie
 - **Rafraîchissement Automatique** - Intervalle de rafraîchissement configurable (30s, 1m, 2m, 5m)
 - **Lancement au Démarrage** - Démarrez optionnellement avec votre Mac
 - **Pourcentage dans la Barre de Menu** - Afficher/masquer le pourcentage à côté de l'icône
@@ -135,7 +137,9 @@ Cliquez sur l'icône ⓘ pour voir les informations de l'application, les crédi
 
 ## Fonctionnement
 
-ClaudeBar lit les identifiants OAuth du Trousseau macOS que Claude Code stocke lors de la connexion. Il interroge ensuite l'API Anthropic pour obtenir vos limites d'utilisation actuelles.
+ClaudeBar lit les identifiants OAuth du Trousseau macOS que Claude Code stocke lors de la connexion. Il interroge ensuite le même point de terminaison d'utilisation que la commande `/usage` de Claude Code.
+
+Lorsque le jeton est sur le point d'expirer, ClaudeBar le renouvelle avec le même protocole que Claude Code : il prend d'abord le verrou de renouvellement de Claude Code (`~/.claude.lock`), relit le Trousseau et utilise le nouveau jeton si Claude Code l'a déjà renouvelé ; sinon il le renouvelle lui-même et le met à jour sur place. L'écriture est transmise à l'outil `security` via stdin, le jeton n'apparaît donc jamais dans les arguments du processus. Si le Trousseau est indisponible, `~/.claude/.credentials.json` sert de solution de repli.
 
 ### Architecture
 
@@ -159,11 +163,15 @@ ClaudeBar lit les identifiants OAuth du Trousseau macOS que Claude Code stocke l
 
 ### Accès au Trousseau
 
-Au premier lancement, macOS peut vous demander d'autoriser ClaudeBar à accéder au Trousseau. Cliquez sur **Toujours Autoriser** pour un fonctionnement sans problème.
+Les lectures et écritures passent par l'outil système `security`, le même chemin que Claude Code, donc aucune demande supplémentaire du Trousseau n'apparaît normalement. Si macOS la demande, cliquez sur **Toujours Autoriser**.
+
+### Notifications
+
+Au premier lancement, macOS demande si ClaudeBar peut afficher des notifications. En cas de refus, vous pouvez les réactiver plus tard dans Réglages Système › Notifications › ClaudeBar.
 
 ### Confidentialité
 
-- Lit uniquement les identifiants existants du Trousseau
+- Lit uniquement les identifiants déjà stockés par Claude Code et n'écrit que les jetons renouvelés
 - Toute communication utilise HTTPS
 - Aucune donnée stockée en dehors du Trousseau système
 - Pas d'analytique ni de télémétrie

@@ -33,11 +33,13 @@
 ## Özellikler
 
 - **Gerçek Zamanlı Kullanım İzleme** - Mevcut oturum ve haftalık kullanım limitlerini bir bakışta görün
-- **Plan Rozeti** - Mevcut aboneliğinizi gösterir (Pro, Max, Team)
-- **Ekstra Kullanım Desteği** - Etkinleştirildiğinde kullandıkça öde kredilerini takip edin
+- **Plan Rozeti** - Mevcut aboneliğinizi gösterir (Pro, Max 5x, Max 20x, Team, Enterprise)
+- **Model Bazlı Haftalık Limitler** - Planınız bildirdiğinde Fable, Opus ve Sonnet için ayrı satırlar
+- **Kullanım Kredileri** - Tek seferlik kredileri ve son kullanma tarihlerini gösterir
+- **Ekstra Kullanım Desteği** - Kullandıkça öde harcamasını takip edin, kuruluşunuz kapattıysa nedenini görün
 - **Renk Kodlu İlerleme Çubukları** - Kullanım yüzdesine göre yeşil, sarı, turuncu, kırmızı
 - **Çoklu Dil Desteği** - İngilizce, Türkçe, Çince, İspanyolca, Rusça ve uygulama içi dil seçimi
-- **Özelleştirilebilir Bildirimler** - %50, %75, %100 veya sıfırlandığında bildirim alın
+- **Özelleştirilebilir Bildirimler** - İzlenen her limit için %50, %75, %100 veya sıfırlandığında yerel Bildirim Merkezi uyarıları
 - **Otomatik Yenileme** - Yapılandırılabilir yenileme aralığı (30sn, 1dk, 2dk, 5dk)
 - **Giriş Sırasında Başlat** - İsteğe bağlı olarak Mac'inizle birlikte başlatın
 - **Menü Çubuğunda Yüzde** - Menü çubuğu simgesinin yanında yüzdeyi gösterin/gizleyin
@@ -133,7 +135,9 @@ Uygulama bilgileri, kreditler ve bağlantılar için ⓘ simgesine tıklayın.
 
 ## Nasıl Çalışır
 
-ClaudeBar, Claude Code'un giriş yaptığınızda sakladığı OAuth kimlik bilgilerini macOS Keychain'den okur. Ardından mevcut kullanım limitlerini almak için Anthropic API'sini sorgular.
+ClaudeBar, Claude Code'un giriş yaptığınızda sakladığı OAuth kimlik bilgilerini macOS Keychain'den okur. Ardından Claude Code'un `/usage` komutunun kullandığı uç noktayı sorgular.
+
+Token'ın süresi dolmak üzereyse ClaudeBar onu Claude Code ile aynı protokolle yeniler: önce Claude Code'un yenileme kilidini (`~/.claude.lock`) alır, Keychain'i yeniden okur ve Claude Code bu arada yenilemişse yeni token'ı kullanır; aksi halde kendisi yeniler ve sonucu yerinde günceller. Yazma `security` aracına stdin üzerinden verilir, token süreç argümanlarında görünmez. Keychain kullanılamıyorsa `~/.claude/.credentials.json` dosyasına düşülür.
 
 ### Mimari
 
@@ -157,11 +161,15 @@ ClaudeBar, Claude Code'un giriş yaptığınızda sakladığı OAuth kimlik bilg
 
 ### Anahtarlık Erişimi
 
-İlk başlatmada macOS, ClaudeBar'ın Anahtarlık'a erişmesine izin vermenizi isteyebilir. Sorunsuz çalışma için **Her Zaman İzin Ver**'e tıklayın.
+Okuma ve yazma Claude Code ile aynı yoldan, sistemin `security` aracıyla yapılır; bu yüzden genellikle ek bir Anahtarlık sorusu çıkmaz. macOS yine de sorarsa **Her Zaman İzin Ver**'e tıklayın.
+
+### Bildirimler
+
+İlk açılışta macOS, ClaudeBar'ın bildirim gösterip gösteremeyeceğini sorar. Reddederseniz daha sonra Sistem Ayarları › Bildirimler › ClaudeBar altından açabilirsiniz.
 
 ### Gizlilik
 
-- Yalnızca Keychain'deki mevcut kimlik bilgilerini okur
+- Yalnızca Claude Code'un sakladığı kimlik bilgilerini okur, geriye yalnızca yenilenmiş token'ı yazar
 - Tüm iletişim HTTPS kullanır
 - Sistem Keychain'i dışında veri depolanmaz
 - Analitik veya telemetri yok
