@@ -21,6 +21,19 @@ enum AppLanguage: String, CaseIterable {
     }
 }
 
+/// SwiftPM'in ürettiği Bundle.module yalnızca .app kökünü ve derleme dizinini arar.
+/// Kökte duran bir paket codesign tarafından "unsealed content" sayılıp imzayı bozduğu
+/// için build.sh kaynakları Contents/Resources altına koyar; önce orası denenir.
+/// swift run ve testlerde orada bir şey yoktur, Bundle.module derleme dizinini bulur.
+private let resourceBundle: Bundle = {
+    let name = "ClaudeBar_ClaudeBar.bundle"
+    if let resources = Bundle.main.resourceURL,
+       let bundle = Bundle(url: resources.appendingPathComponent(name)) {
+        return bundle
+    }
+    return Bundle.module
+}()
+
 /// Cached bundle state to avoid repeated UserDefaults reads and bundle lookups
 private var cachedLanguageCode: String?
 private var cachedBundle: Bundle?
@@ -42,17 +55,17 @@ private func resolvedBundle() -> Bundle {
     cachedLanguageCode = code
     
     guard code != "system" else {
-        cachedBundle = Bundle.module
-        return Bundle.module
+        cachedBundle = resourceBundle
+        return resourceBundle
     }
 
-    if let path = Bundle.module.path(forResource: code, ofType: "lproj"),
+    if let path = resourceBundle.path(forResource: code, ofType: "lproj"),
        let bundle = Bundle(path: path) {
         cachedBundle = bundle
         return bundle
     }
 
-    let bundlePath = Bundle.module.bundlePath
+    let bundlePath = resourceBundle.bundlePath
     let candidates = [code, code.lowercased()]
     for candidate in candidates {
         let lprojPath = (bundlePath as NSString).appendingPathComponent("\(candidate).lproj")
@@ -63,8 +76,8 @@ private func resolvedBundle() -> Bundle {
         }
     }
 
-    cachedBundle = Bundle.module
-    return Bundle.module
+    cachedBundle = resourceBundle
+    return resourceBundle
 }
 
 /// Returns the active locale based on user's language selection
