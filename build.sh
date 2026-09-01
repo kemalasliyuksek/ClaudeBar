@@ -29,6 +29,11 @@ if [ -d "$RESOURCE_BUNDLE" ]; then
     cp -r "$RESOURCE_BUNDLE" "$APP_BUNDLE/"
 fi
 
+# Ad-hoc signature: gives the bundle a stable identity so UNUserNotificationCenter
+# and Keychain ACL prompts are attributed to ClaudeBar instead of an unsigned binary.
+echo "Signing (ad-hoc)..."
+codesign --force --deep --sign - "$APP_BUNDLE"
+
 echo ""
 echo "Build complete: $APP_BUNDLE"
 echo ""
