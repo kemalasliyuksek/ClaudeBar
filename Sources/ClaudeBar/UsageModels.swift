@@ -31,6 +31,18 @@ struct UsageResponse: Codable, Equatable {
         case limits
     }
 
+    /// Menü çubuğunda gösterilecek yüzde. 5 saatlik kova varsa o (utilization null ise 0), kova hiç yoksa (ör. yalnızca aylık
+    /// ekstra kullanım hakkı olan hesaplar) aylık ekstra kullanım yüzdesi; ikisi de yoksa nil.
+    var menuBarPercent: Int? {
+        if let bucket = fiveHour {
+            return bucket.percent
+        }
+        if let extra = extraUsage, extra.isEnabled {
+            return extra.percent
+        }
+        return nil
+    }
+
     /// limits[] içindeki model bazlı haftalık kovalar, API sırası korunur
     var modelLimits: [ScopedLimit] {
         (limits ?? []).filter(\.isModelWeekly)

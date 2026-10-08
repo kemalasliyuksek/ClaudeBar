@@ -6,6 +6,7 @@ struct UsageView: View {
     @Environment(UsageService.self) private var service
     @State private var showSettings = false
     @State private var showAbout = false
+    @State private var window: NSWindow?
 
     /// Bir kullanım satırının görünüm verisi; hangi API alanından geldiği burada önemsizdir
     private struct LimitRow: Identifiable {
@@ -83,6 +84,11 @@ struct UsageView: View {
         }
         .frame(minWidth: 340, idealWidth: 340)
         .fixedSize(horizontal: true, vertical: false)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
+            window?.fitContentHeight(to: height)
+        }
+        .frame(maxHeight: .infinity, alignment: .top)
+        .background(WindowReader { window = $0 })
         .id(service.languageRefreshID)
     }
 
@@ -442,10 +448,8 @@ struct UsageView: View {
             Spacer()
 
             Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    showAbout.toggle()
-                    if showAbout { showSettings = false }
-                }
+                showAbout.toggle()
+                if showAbout { showSettings = false }
             } label: {
                 Image(systemName: "info.circle")
                     .font(.system(size: 11))
@@ -455,10 +459,8 @@ struct UsageView: View {
             .focusable(false)
 
             Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    showSettings.toggle()
-                    if showSettings { showAbout = false }
-                }
+                showSettings.toggle()
+                if showSettings { showAbout = false }
             } label: {
                 Image(systemName: "gearshape")
                     .font(.system(size: 11))
@@ -538,6 +540,38 @@ private struct SettingsRow<Content: View>: View {
                 .font(.system(size: 12))
             Spacer()
             content()
+        }
+    }
+}
+
+
+// MARK: - Window sizing
+
+/// MenuBarExtra penceresi içerik küçüldüğünde eski yüksekliğinde kalıyor; pencereye erişip yüksekliği elle ayarlıyoruz
+private struct WindowReader: NSViewRepresentable {
+    let onWindow: (NSWindow?) -> Void
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        DispatchQueue.main.async { [weak view] in onWindow(view?.window) }
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        DispatchQueue.main.async { [weak nsView] in onWindow(nsView?.window) }
+    }
+}
+
+private extension NSWindow {
+    /// İçerik yüksekliğini verilen değere çeker; üst kenar sabit kalır, pencere aşağı doğru büyür/küçülür
+    func fitContentHeight(to height: CGFloat) {
+        guard height > 0, abs(contentRect(forFrameRect: frame).height - height) > 0.5 else { return }
+        var newFrame = frameRect(forContentRect: NSRect(x: 0, y: 0, width: contentRect(forFrameRect: frame).width, height: height))
+        newFrame.origin = NSPoint(x: frame.origin.x, y: frame.maxY - newFrame.height)
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.2
+            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            animator().setFrame(newFrame, display: true)
         }
     }
 }

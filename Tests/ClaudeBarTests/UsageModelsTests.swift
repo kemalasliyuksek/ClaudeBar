@@ -60,6 +60,45 @@ final class UsageModelsTests: XCTestCase {
         XCTAssertNil(usage.extraUsage)
     }
 
+    func testMenuBarPercentPrefersFiveHourSession() throws {
+        let usage = try JSONDecoder().decode(UsageResponse.self, from: Data(fullResponse.utf8))
+        XCTAssertEqual(usage.menuBarPercent, 11)
+    }
+
+    func testMenuBarPercentFallsBackToMonthlyExtraUsage() throws {
+        let monthlyOnly = """
+        { "five_hour": null,
+          "extra_usage": { "is_enabled": true, "monthly_limit": 5000, "used_credits": 1234.5,
+                           "utilization": 24.69, "currency": "USD", "disabled_reason": null } }
+        """
+        let usage = try JSONDecoder().decode(UsageResponse.self, from: Data(monthlyOnly.utf8))
+        XCTAssertEqual(usage.menuBarPercent, 25)
+    }
+
+    func testMenuBarPercentShowsZeroWhenFiveHourUtilizationIsNull() throws {
+        let nullBucket = """
+        { "five_hour": { "utilization": null, "resets_at": null },
+          "extra_usage": { "is_enabled": true, "monthly_limit": 5000, "used_credits": 500,
+                           "utilization": 10, "currency": "USD", "disabled_reason": null } }
+        """
+        let usage = try JSONDecoder().decode(UsageResponse.self, from: Data(nullBucket.utf8))
+        XCTAssertEqual(usage.menuBarPercent, 0)
+    }
+
+    func testMenuBarPercentIsNilWhenExtraUsageDisabled() throws {
+        let disabled = """
+        { "extra_usage": { "is_enabled": false, "monthly_limit": null, "used_credits": null,
+                           "utilization": null, "currency": null, "disabled_reason": "out_of_credits" } }
+        """
+        let usage = try JSONDecoder().decode(UsageResponse.self, from: Data(disabled.utf8))
+        XCTAssertNil(usage.menuBarPercent)
+    }
+
+    func testMenuBarPercentIsNilWithoutAnyData() throws {
+        let usage = try JSONDecoder().decode(UsageResponse.self, from: Data("{}".utf8))
+        XCTAssertNil(usage.menuBarPercent)
+    }
+
     func testResetDateParsesBothISOForms() {
         XCTAssertNotNil(UsageBucket(utilization: 1, resetsAt: "2026-09-01T21:00:00Z").resetDate)
         XCTAssertNotNil(UsageBucket(utilization: 1, resetsAt: "2026-09-01T21:00:00.123Z").resetDate)
